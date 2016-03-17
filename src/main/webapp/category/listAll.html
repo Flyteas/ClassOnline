@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="../resources/scripts/extjs/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all.css">
+<script
+	src="../resources/scripts/extjs/ext-all.js"></script>
+<script type="text/javascript">
+    //定义JSON数据源
+	var store = new Ext.data.JsonStore({
+		storeId : 'myStore',
+		proxy : {
+			type : 'ajax',
+			url : 'listAll.json',
+			reader : {
+				type : 'json',
+				rootProperty : ''
+			}
+		},
+		fields : [ 'name', 'code', 'id' ]
+	});
+	Ext.onReady(function() {
+		//加载JSON数据
+		store.load(function(records, operation, success) {
+			if (success) {
+				//若加载成功创建grid显示数据
+				var grid = Ext.create('Ext.grid.Panel', {
+					title : '所有Category',
+					renderTo : Ext.get("gridDiv"),
+					autoHeight : true,
+					width : 500,
+					store : store,
+					selType : 'rowmodel',
+					singleSelect : true,
+					columns : [ {
+						header : '编码',
+						sortable : true,
+						dataIndex : 'code'
+					}, {
+						header : '名称',
+						sortable : false,
+						dataIndex : 'name'
+					}, {
+						header : 'id',
+						sortable : false,
+						dataIndex : 'id'
+					} ]
+				});
+			}else{
+				Ext.MessageBox.alert('失败', "数据加载失败");
+			}
+		});
+
+	});
+</script>
+<title>列出所有Category</title>
+</head>
+<body>
+	<!-- gridDiv位于页面正中（距离顶部50px），用于显示grid -->
+	<div id="gridDiv" style="margin: 50px auto; width: 500px"></div>
+</body>
+</html>

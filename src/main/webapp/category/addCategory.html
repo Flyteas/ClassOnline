@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="../resources/scripts/extjs/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all.css">
+<script
+	src="../resources/scripts/extjs/ext-all.js"></script>
+
+<script type="text/javascript">
+    //定义表单提交后处理服务器返回数据的函数
+	var onSuccessOrFail = function(form, action) {
+		var formPanel = Ext.getCmp('myFormPanel');
+		formPanel.el.unmask();
+		var result = action.result;
+		if (result.success) {
+			Ext.MessageBox.alert('成功', result.msg, function() {
+				window.location.href = "listAll.html";
+			});
+
+		} else {
+			Ext.MessageBox.alert('失败', result.msg);
+		}
+	};
+	//定义表单提交按键处理函数
+	var submitHandler = function(btn) {
+		var formPanel = Ext.getCmp('myFormPanel');
+		formPanel.el.mask('正在提交数据请等待...', 'x-mask-loading');
+		formPanel.getForm().submit({
+			url : 'addCategory.json',
+			success : onSuccessOrFail,
+			failure : onSuccessOrFail
+		});
+	};
+	//创建提交按键
+	var submitBtn = Ext.create('Ext.button.Button', {
+		text : '提交',
+		handler : submitHandler,
+	});
+	//创建表单输入框（名称和编码）
+	var fpItems = [ {
+		fieldLabel : '名称:',
+		name : 'name',
+		allowBlank : false,
+		blankText : '名称不能为空',
+		maxLength : 100,
+		maxLengthText : '名称不能超过100'
+	}, {
+		fieldLabel : '编码:',
+		name : 'code',
+		allowBlank : false,
+		blankText : '编码不能为空',
+		maxLength : 10,
+		maxLengthText : '编码不能超过10'
+	} ];
+	//创建表单
+	var fp = Ext.create('Ext.form.Panel', {
+		id : "myFormPanel",
+		width : 400,
+		height : 240,
+		title : '添加Category',
+		frame : true,
+		region : 'center',
+		layout : 'anchor',
+		bodyStyle : 'padding: 6px',
+		labelWidth : 50,
+		defaultType : 'textfield',
+		defaults : {
+			msgTarget : 'under',
+			anchor : '-20'
+		},
+		items : fpItems,
+		buttons : [ submitBtn ]
+	});
+	//页面加载完毕后显示表单
+	Ext.onReady(function() {
+		//表单显示到formDiv
+		fp.render(Ext.get("formDiv"));
+	});
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>添加Category</title>
+</head>
+<body>
+    <!-- formDiv位于页面正中（距离顶部100px），用于显示表单 -->
+	<div id="formDiv" style="margin: 100px auto; width: 400px"></div>
+</body>
+</html>
