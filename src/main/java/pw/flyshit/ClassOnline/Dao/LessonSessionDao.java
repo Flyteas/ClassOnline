@@ -1,5 +1,6 @@
 package pw.flyshit.ClassOnline.Dao;
-
-public interface LessonSessionDao {
+import pw.flyshit.ClassOnline.Domain.LessonSession;
+public interface LessonSessionDao 
+{
 
 }
