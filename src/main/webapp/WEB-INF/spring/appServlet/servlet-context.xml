@@ -25,19 +25,19 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="cn.edu.cqu.bookshop" />
+	<context:component-scan base-package="pw.flyshit.ClassOnline" />
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<beans:property name="url" value="jdbc:mysql://localhost/classonline?useUnicode=true&amp;characterEncoding=UTF-8" />
-		<beans:property name="username" value="user1" />
-		<beans:property name="password" value="user1" />
+		<beans:property name="username" value="classonline" />
+		<beans:property name="password" value="123654" />
 	</beans:bean> 
 	<!--	设置sessionFactory-->
 	<beans:bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource" />
-		<beans:property name="packagesToScan" value="cn.edu.cqu.bookshop.domains" />
+		<beans:property name="packagesToScan" value="pw.flyshit.ClassOnline.Domain" />
 		
 		<beans:property name="hibernateProperties">
 			<beans:props>
