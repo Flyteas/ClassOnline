@@ -16,13 +16,13 @@ public class Student
 	@Column(length = 32)
 	private String stuName; //学生姓名
 	@Column(length = 2)
-	private String stuSex; //学生性别
+	private int stuSex; //学生性别,0为男，1为女
 	@Column(length = 32)
 	private String stuClass; //学生班别
 	@Column(length = 32)
 	private String stuWechatOpenId; //学生微信号OpenId
 	
-	public Student(String studentId,String studentName,String studentSex,String studentClass) //构造方法
+	public Student(String studentId,String studentName,int studentSex,String studentClass) //构造方法
 	{
 		this.stuId = studentId;
 		this.stuName = studentName;
@@ -46,11 +46,11 @@ public class Student
 	{
 		return this.stuName;
 	}
-	public void setStuSex(String studentSex)
+	public void setStuSex(int studentSex)
 	{
 		this.stuSex = studentSex;
 	}
-	public String getStuSex()
+	public int getStuSex()
 	{
 		return this.stuSex;
 	}

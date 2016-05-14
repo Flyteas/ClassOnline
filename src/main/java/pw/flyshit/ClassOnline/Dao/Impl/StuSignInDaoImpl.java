@@ -39,9 +39,9 @@ public class StuSignInDaoImpl implements StuSignInDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<StuSignIn> findStuSignInBySession(LessonSession lessonSession) //查询某应答会话的所有签到记录
+	public List<StuSignIn> findStuSignInBySession(LessonSession lessonSession) //查询某应答会话的所有签到记录，ASC排序
 	{
-		String hqlStr = "from StuSignIn wehre lessonSession=?";
+		String hqlStr = "from StuSignIn wehre lessonSession=? order by signInOrder asc";
 		return (List<StuSignIn>)ht.find(hqlStr,lessonSession);
 	}
 	

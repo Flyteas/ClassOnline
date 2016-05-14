@@ -15,7 +15,8 @@ public class LessonSession
 	@Column(length = 1)
 	private int sessionType; //会话模式,0为注册，1为签到，2为答题
 	@ManyToOne
-	private Lesson lesson;
+	//private Lesson lesson;
+	private CourseClass courseClass;
 	@ManyToOne(optional = true) //问题可为空
 	private Question question;
 	@Column(length = 16)
@@ -44,13 +45,21 @@ public class LessonSession
 	{
 		this.sessionType = sessionType;
 	}
-	public Lesson getLesson() 
+	/*public Lesson getLesson() 
 	{
 		return lesson;
 	}
 	public void setLesson(Lesson lesson) 
 	{
 		this.lesson = lesson;
+	}*/
+	public CourseClass getCourseClass()
+	{
+		return this.courseClass;
+	}
+	public void setCourseClass(CourseClass courseClass)
+	{
+		this.courseClass = courseClass;
 	}
 	public Question getQuestion() 
 	{

@@ -101,4 +101,22 @@ public class StudentDaoImpl implements StudentDao
 		ht.save(newStudent);
 		return true;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<Student> getAllRegStu() //获取所有已注册学生
+	{
+		String hqlStr = "from Student wehre stuWechatOpenId is not null";
+		return (List<Student>)ht.find(hqlStr);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<Student> getAllUnregStu() //获取所有未注册学生
+	{
+		String hqlStr = "from Student wehre stuWechatOpenId is null";
+		return (List<Student>)ht.find(hqlStr);
+	}
 }

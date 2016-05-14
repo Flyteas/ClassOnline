@@ -11,4 +11,6 @@ public interface StudentDao
 	public List<Student> findStudentByOpenId(String stuOpenId); //通过OpenId查询学生
 	public boolean deleteStudentById(String stuId); //通过学生ID删除学生
 	public boolean addStudent(Student newStudent); //添加学生
+	public List<Student> getAllRegStu(); //获取所有已注册学生
+	public List<Student> getAllUnregStu(); //获取所有未注册学生
 }
