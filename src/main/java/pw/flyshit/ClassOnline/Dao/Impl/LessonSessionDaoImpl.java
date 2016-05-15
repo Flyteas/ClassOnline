@@ -10,6 +10,7 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import pw.flyshit.ClassOnline.Dao.LessonSessionDao;
+import pw.flyshit.ClassOnline.Domain.CourseClass;
 import pw.flyshit.ClassOnline.Domain.Lesson;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Question;
@@ -144,5 +145,13 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 	{
 		ht.save(lessonSession);
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LessonSession> getCurrentSessionByCourClass(CourseClass courseClass) //查询某教学班是否是否当前有会话正在进行
+	{
+		String hqlStr = "from LessonSession where courseClass=? and beginTime<=? and endTime>=?";
+		return (List<LessonSession>)ht.find(hqlStr, courseClass, System.currentTimeMillis(), System.currentTimeMillis());
 	}
 }

@@ -1,6 +1,7 @@
 package pw.flyshit.ClassOnline.Dao;
 import java.util.List;
 
+import pw.flyshit.ClassOnline.Domain.CourseClass;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Lesson;
 import pw.flyshit.ClassOnline.Domain.Question;
@@ -14,6 +15,7 @@ public interface LessonSessionDao
 	public List<LessonSession> findSessionByEndTime(long endTime); //通过结束时间查找
 	public List<LessonSession> findSessionByBeginAndEndTime(long beginTime,long endTime); //通过开始时间和结束时间查找
 	public List<LessonSession> findSessionByTimeRange(long startFindTime,long endFindTime); //查询某时间段内所有会话
+	public List<LessonSession> getCurrentSessionByCourClass(CourseClass courseClass); //查询某教学班是否是否当前有会话正在进行
 	public boolean deleteSessionById(String sessionId); //通过ID删除
 	public int deleteSessionByType(int sessionType); //删除某种会话模式的所有会话，返回删除条目数
 	public int deleteSessionByLesson(Lesson lesson); //删除某课堂的所有会话，返回删除条目数

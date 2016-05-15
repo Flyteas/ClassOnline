@@ -10,11 +10,14 @@ import pw.flyshit.ClassOnline.Domain.Student;
 
 public interface TeacherService 
 {
+	public LessonSession getCurrentSession(String courseClassId); //获取某教学班的当前会话
 	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime); //开启一个新的会话
 	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime, Question question); //开启一个新的会话
 	public boolean stopSession(String lessonSessionId); //停止一个会话
 	public List<Student> getRegisteredStudent(); //获取所有已注册学生
 	public List<Student> getUnregisterStudent(); //获取所有未注册学生
+	public List<Student> getRegStusByCourseClass(String courseClassId); //查询某教学班所有已注册学生
+	public List<Student> getUnregStusByCourseClass(String courseClassId); //查询某教学班所有未注册学生
 	public boolean deleteStuRegInfo(String studentId); //清除指定学生注册信息，也就是变为未注册状态
 	public List<StuSignIn> getSignInStudent(String lessonSessionId); //获取指定会话所有已签到学生
 	public List<Student> getUnsignInStudent(String lessonSessionId); //获取指定会话所有未签到学生

@@ -22,13 +22,17 @@ public class Student
 	@Column(length = 32)
 	private String stuWechatOpenId; //学生微信号OpenId
 	
-	public Student(String studentId,String studentName,int studentSex,String studentClass) //构造方法
+	public Student()
+	{
+		
+	}
+	/*public Student(String studentId,String studentName,int studentSex,String studentClass) //构造方法
 	{
 		this.stuId = studentId;
 		this.stuName = studentName;
 		this.stuSex = studentSex;
 		this.stuClass = studentClass;
-	}
+	}*/
 	/* Setter和Getter */
 	public void setStuId(String studentId)
 	{

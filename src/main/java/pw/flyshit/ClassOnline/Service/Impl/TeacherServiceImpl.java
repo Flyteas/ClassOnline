@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import pw.flyshit.ClassOnline.Dao.CourseClassDao;
 import pw.flyshit.ClassOnline.Dao.CourseClassMemberDao;
@@ -24,6 +26,8 @@ import pw.flyshit.ClassOnline.Domain.StuSignIn;
 import pw.flyshit.ClassOnline.Domain.Student;
 import pw.flyshit.ClassOnline.Service.TeacherService;
 
+@Transactional
+@Service
 public class TeacherServiceImpl implements TeacherService
 {
 	@Autowired
@@ -78,6 +82,7 @@ public class TeacherServiceImpl implements TeacherService
 		{
 			return null;
 		}
+		questionDao.addQuestion(question);
 		LessonSession lessonSession = new LessonSession();
 		lessonSession.setLessonSessionId(String.valueOf(System.currentTimeMillis())); //会话ID设置为当前时间戳
 		lessonSession.setBeginTime(beginTime);
@@ -255,6 +260,70 @@ public class TeacherServiceImpl implements TeacherService
 			return null;
 		}
 		return stuAnswerDao.findCorrectStuAnswerByQuestion(question);
+	}
+
+	@Override
+	public LessonSession getCurrentSession(String courseClassId) //获取某教学班的当前会话
+	{
+		List<LessonSession> currentSession = null;
+		CourseClass courseClass;
+		courseClass = courseClassDao.findCourseClassById(courseClassId);
+		if(courseClass == null)
+		{
+			return null;
+		}
+		currentSession = lessonSessionDao.getCurrentSessionByCourClass(courseClass);
+		if(currentSession.isEmpty())
+		{
+			return null;
+		}
+		return currentSession.get(0);
+	}
+
+	@Override
+	public List<Student> getRegStusByCourseClass(String courseClassId) //查询某教学班所有已注册学生
+	{
+		CourseClass courseClass;
+		List<CourseClassMember> classMembs;
+		List<Student> regStus;
+		regStus = new ArrayList<Student>();
+		courseClass = courseClassDao.findCourseClassById(courseClassId);
+		if(courseClass == null)
+		{
+			return null;
+		}
+		classMembs = courseClassMemberDao.findCourseClassMemberByCourseClass(courseClass);
+		for(int i=0;i<classMembs.size();i++)
+		{
+			if(!classMembs.get(i).getStu().getStuOpenId().isEmpty()) //已经注册
+			{
+				regStus.add(classMembs.get(i).getStu()); //添加到结果集
+			}
+		}
+		return regStus;
+	}
+
+	@Override
+	public List<Student> getUnregStusByCourseClass(String courseClassId) //查询某教学班所有已注册学生
+	{
+		CourseClass courseClass;
+		List<CourseClassMember> classMembs;
+		List<Student> unregStus;
+		unregStus = new ArrayList<Student>();
+		courseClass = courseClassDao.findCourseClassById(courseClassId);
+		if(courseClass == null)
+		{
+			return null;
+		}
+		classMembs = courseClassMemberDao.findCourseClassMemberByCourseClass(courseClass);
+		for(int i=0;i<classMembs.size();i++)
+		{
+			if(classMembs.get(i).getStu().getStuOpenId().isEmpty()) //未注册
+			{
+				unregStus.add(classMembs.get(i).getStu()); //添加到结果集
+			}
+		}
+		return unregStus;
 	}
 
 

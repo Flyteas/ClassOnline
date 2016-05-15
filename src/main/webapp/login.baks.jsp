@@ -1,7 +1,7 @@
-﻿<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="GBK"%>
 <html>
 <head>
-   <title>登录</title>
+   <title>��¼</title>
    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
    <script src="resources/js/jquery-1.12.2.min.js"></script>
    <script src="resources/js/bootstrap.min.js"></script>
@@ -12,12 +12,12 @@
 		<div class="col-md-12 column">
 			<ul class="nav nav-tabs">
 				<li class="active">
-					 <a href="#">登录</a>
+					 <a href="#">��¼</a>
 				</li>
 			</ul>
 			<div class="page-header">
 				<h1>
-					<small>登录您的账号</small>
+					<small>��¼�����˺�</small>
 				</h1>
 			</div>
 		</div>
@@ -26,37 +26,45 @@
 		<div class="col-md-2 column">
 		</div>
 		<div class="col-md-5 column">
-			<form class="form-horizontal" role="form">
+			<form class="form-horizontal" role="form" action="SessionStart.do" method="post">
 				<div class="form-group">
-					 <label class="col-sm-2 control-label" for="inputEmail3">用户名</label>
+					 <label class="col-sm-2 control-label" for="inputUsername">�˺�</label>
 					<div class="col-sm-7">
-						<input class="form-control" id="inputEmail3" type="email" />
+						<input class="form-control" id="username" name="sessionType" type="text" />
 					</div>
 				</div>
 				<div class="form-group">
-					 <label class="col-sm-2 control-label" for="inputPassword3">密码</label>
+					 <label class="col-sm-2 control-label" for="inputPassword">����</label>
 					<div class="col-sm-7">
-						<input class="form-control" id="inputPassword3" type="password" />
+						<input class="form-control" id="pwd" name="courseClassId" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputPassword">����</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="pwd" name="beginTime" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputPassword">����</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="pwd" name="endTime" type="text" />
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
 						<div class="checkbox">
-							 <label><input type="checkbox" />记住账号</label>
+							 <label><input type="checkbox" />��ס�˺�</label>
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						 <button class="btn btn-default" type="submit">登陆</button>
+						 <button class="btn btn-default" type="submit">��¼</button>
 					</div>
 				</div>
 			</form>
-			<div class="alert alert-success" role="alert">
-        		<strong>登录成功</strong>
-    		</div>
 		</div>
-
 	</div>
 </div>
 
