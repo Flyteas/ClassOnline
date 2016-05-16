@@ -3,15 +3,15 @@ package pw.flyshit.ClassOnline.Controller;
 /* 教师端控制器 */
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Question;
+import pw.flyshit.ClassOnline.Domain.StuAnswer;
 import pw.flyshit.ClassOnline.Domain.StuSignIn;
 import pw.flyshit.ClassOnline.Domain.Student;
+import pw.flyshit.ClassOnline.Domain.Teacher;
 import pw.flyshit.ClassOnline.Service.TeacherService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,8 +38,45 @@ public class TeacherController
 		return true;
 	}
 	
+	@RequestMapping(value = { "/Login.do" }, method = RequestMethod.POST) //用户登陆
+	public void Login(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		Teacher user;
+		String techId;
+		String techPassword;
+		int loginError;
+		
+		if(loginCheck(session)) //已登陆
+		{
+			response.sendRedirect("Home.jsp");
+			return;
+		}
+		techId = request.getParameter("username");
+		techPassword = request.getParameter("password");
+		user = teacherService.login(techId, techPassword);
+		if(user == null) //登陆失败
+		{
+			loginError = 1;
+			session.setAttribute("loginError", loginError);
+			response.sendRedirect("Login.jsp");
+		}
+		else
+		{
+			session.removeAttribute("loginError");
+			session.setAttribute("user",user);
+			response.sendRedirect("Home.jsp");
+		}
+	}
+	
+	@RequestMapping(value = { "/Logout.do" }, method = RequestMethod.GET) //用户注销
+	public void logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		session.removeAttribute("user");
+		response.sendRedirect("Login.jsp");
+	}
+	
 	@RequestMapping(value = { "/SessionStart.do" }, method = RequestMethod.POST) //开启一个会话
-	public void startSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //处理Post请求
+	public void startSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
 		int sessionType; //会话模式,0为注册，1为签到，2为答题
 		String courseClassId;
@@ -52,7 +89,7 @@ public class TeacherController
 		
 		if(!loginCheck(session)) //没有登陆
 		{
-			response.sendRedirect("/Login.jsp");
+			response.sendRedirect("Login.jsp");
 			return;
 		}
 		errMsgs = new ArrayList<String>();
@@ -121,7 +158,7 @@ public class TeacherController
 		String msg;
 		if(!loginCheck(session)) //登陆状态检查
 		{
-			response.sendRedirect("/Login.jsp");
+			response.sendRedirect("Login.jsp");
 			return;
 		}
 		sessionId = request.getParameter("sessionId");
@@ -146,7 +183,7 @@ public class TeacherController
 		String errMsg;
 		if(!loginCheck(session)) //登陆状态检查
 		{
-			response.sendRedirect("/Login.jsp");
+			response.sendRedirect("Login.jsp");
 			return;
 		}
 		courseClassId = request.getParameter("courseClassId");
@@ -173,7 +210,7 @@ public class TeacherController
 		String msg;
 		if(!loginCheck(session)) //登录状态检查
 		{
-			response.sendRedirect("/Login.jsp");
+			response.sendRedirect("Login.jsp");
 			return;
 		}
 		studentId = request.getParameter("studentId");
@@ -197,10 +234,9 @@ public class TeacherController
 		List<Student> unsignInStus; //未签到学生
 		String errMsg;
 		
-		errMsg = "";
 		if(!loginCheck(session))
 		{
-			response.sendRedirect("/Login.jsp");
+			response.sendRedirect("Login.jsp");
 			return;
 		}
 		sessionId = request.getParameter("sessionId");
@@ -218,5 +254,38 @@ public class TeacherController
 			request.setAttribute("unsignInStus", unsignInStus);
 			request.getRequestDispatcher("/SignInStateList.jsp").forward(request, response);
 		}
+	}
+	
+	@RequestMapping(value = { "/AnswerStateList.do" }, method = RequestMethod.GET)
+	public void listAnswerState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生答题状态
+	{
+		String sessionId;
+		List<StuAnswer> stuAnswers;
+		Question question;
+		String errMsg;
+		
+		if(!loginCheck(session))
+		{
+			response.sendRedirect("Login.jsp");
+			return;
+		}
+		sessionId = request.getParameter("sessionId");
+		stuAnswers = teacherService.getStuAnswerBySessionId(sessionId);
+		if(stuAnswers == null)
+		{
+			errMsg = "此会话不存在或非答题会话!";
+			request.setAttribute("errMsg", errMsg);
+			request.getRequestDispatcher("/SessionManage.jsp").forward(request, response);
+		}
+		question = teacherService.getQuestionBySessionId(sessionId);
+		if(question == null)
+		{
+			errMsg = "此问题不存在!";
+			request.setAttribute("errMsg", errMsg);
+			request.getRequestDispatcher("/SessionManage.jsp").forward(request, response);
+		}
+		request.setAttribute("stuAnswers", stuAnswers);
+		request.setAttribute("question", question);
+		request.getRequestDispatcher("/AnwserStateList.jsp").forward(request, response);
 	}
 }

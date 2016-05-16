@@ -7,9 +7,11 @@ import pw.flyshit.ClassOnline.Domain.StuAnswer;
 import pw.flyshit.ClassOnline.Domain.StuSignIn;
 import pw.flyshit.ClassOnline.Domain.Student;
 /* 教师端业务接口类  */
+import pw.flyshit.ClassOnline.Domain.Teacher;
 
 public interface TeacherService 
 {
+	public Teacher login(String techId,String techPassword);
 	public LessonSession getCurrentSession(String courseClassId); //获取某教学班的当前会话
 	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime); //开启一个新的会话
 	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime, Question question); //开启一个新的会话
@@ -25,4 +27,5 @@ public interface TeacherService
 	public List<StuAnswer> getStuAnswerByQuestionId(String questionId); //根据问题ID获取答题记录
 	public List<StuAnswer> getCorrectAnsBySessionId(String lessonSessionId); //根据会话ID获取正确答题记录
 	public List<StuAnswer> getCorrectAnsByQuestionId(String questionId); //根据问题ID获取正确答题记录
+	public Question getQuestionBySessionId(String sessionId); //根据SessionId获取问题
 }

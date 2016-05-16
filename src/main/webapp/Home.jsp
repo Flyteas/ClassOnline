@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
 <head>
    <title>课堂应答系统</title>
@@ -7,6 +7,14 @@
    <script src="resources/js/bootstrap.min.js"></script>
 </head>
 <body>
+<%
+	Object user;
+	user = session.getAttribute("user");
+	if(user == null) //未登陆
+	{
+		response.sendRedirect("Login.jsp");
+	}
+%>
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -40,7 +48,7 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
-							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">用户XX<strong class="caret"></strong></a>
+							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
 								<li>
 									 <a href="#">个人资料</a>
@@ -51,7 +59,7 @@
 								<li class="divider">
 								</li>
 								<li>
-									 <a href="#">注销</a>
+									 <a href="Logout.do">注销</a>
 								</li>
 							</ul>
 						</li>

@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
-encoding//src/main/webapp/home.jsp=UTF-8
+encoding//src/main/webapp/Home.jsp=UTF-8
+encoding//src/main/webapp/Login.jsp=UTF-8
 encoding/<project>=UTF-8
+separateDerivedEncodings=true

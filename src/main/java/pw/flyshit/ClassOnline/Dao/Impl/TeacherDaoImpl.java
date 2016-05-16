@@ -22,7 +22,7 @@ public class TeacherDaoImpl implements TeacherDao
 	@Override
 	public Teacher teacherLogin(String techId,String techPassword) //登陆教师帐户，失败返回NULL
 	{
-		String hqlStr = "from Teacher wehre techId=? and techPassword=?";
+		String hqlStr = "from Teacher where techId=? and techPassword=?";
 		List<Teacher> teacherLoginResult = (List<Teacher>)ht.find(hqlStr,techId,techPassword);
 		if(teacherLoginResult.size()>0)
 		{

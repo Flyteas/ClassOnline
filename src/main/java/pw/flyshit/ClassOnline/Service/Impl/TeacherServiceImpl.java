@@ -24,6 +24,7 @@ import pw.flyshit.ClassOnline.Domain.Question;
 import pw.flyshit.ClassOnline.Domain.StuAnswer;
 import pw.flyshit.ClassOnline.Domain.StuSignIn;
 import pw.flyshit.ClassOnline.Domain.Student;
+import pw.flyshit.ClassOnline.Domain.Teacher;
 import pw.flyshit.ClassOnline.Service.TeacherService;
 
 @Transactional
@@ -324,6 +325,24 @@ public class TeacherServiceImpl implements TeacherService
 			}
 		}
 		return unregStus;
+	}
+
+	@Override
+	public Question getQuestionBySessionId(String sessionId) //根据会话ID获取问题
+	{
+		LessonSession session;
+		session = lessonSessionDao.findSessionById(sessionId);
+		if(session == null || session.getSessionType() != 2)
+		{
+			return null;
+		}
+		return session.getQuestion();
+	}
+
+	@Override
+	public Teacher login(String techId, String techPassword) //登陆
+	{
+		return teacherDao.teacherLogin(techId, techPassword);
 	}
 
 
