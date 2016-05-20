@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 /* 课程实体类 */
 @Entity
-@Table(name = "CourseClass")
+@Table(name = "Course")
 public class Course 
 {
 	@Id

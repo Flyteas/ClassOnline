@@ -30,11 +30,11 @@ public class StudentDaoImpl implements StudentDao
 		{
 			return 2;
 		}
-		if(!regStu.getStuOpenId().isEmpty()) //OpenId非空，即已注册
+		if(!regStu.getStuWechatOpenId().isEmpty()) //OpenId非空，即已注册
 		{
 			return 1;
 		}
-		regStu.setStuOpenId(openId);
+		regStu.setStuWechatOpenId(openId);
 		ht.update(regStu);
 		return 0;
 	}
@@ -49,11 +49,11 @@ public class StudentDaoImpl implements StudentDao
 		{
 			return 2;
 		}
-		if(modifyStu.getStuOpenId().isEmpty()) //OpenId为空，即未注册，不需要清空注册信息
+		if(modifyStu.getStuWechatOpenId().isEmpty()) //OpenId为空，即未注册，不需要清空注册信息
 		{
 			return 1;
 		}
-		modifyStu.setStuOpenId(""); //设置OpenId为空
+		modifyStu.setStuWechatOpenId(""); //设置OpenId为空
 		ht.update(modifyStu);
 		return 0;
 	}
@@ -68,7 +68,7 @@ public class StudentDaoImpl implements StudentDao
 	@Override
 	public List<Student> findStudentByName(String stuName) //通过学生名字查询学生
 	{
-		String hqlStr = "from Student wehre stuName=?";
+		String hqlStr = "from Student where stuName=?";
 		return (List<Student>)ht.find(hqlStr, stuName);
 	}
 	
@@ -76,7 +76,7 @@ public class StudentDaoImpl implements StudentDao
 	@Override
 	public List<Student> findStudentByOpenId(String stuOpenId) //通过OpenId查询学生，不存在返回null
 	{
-		String hqlStr = "from Student wehre stuWechatOpenId=?";
+		String hqlStr = "from Student where stuWechatOpenId=?";
 		return (List<Student>)ht.find(hqlStr, stuOpenId);
 	}
 	
@@ -107,7 +107,7 @@ public class StudentDaoImpl implements StudentDao
 	@Override
 	public List<Student> getAllRegStu() //获取所有已注册学生
 	{
-		String hqlStr = "from Student wehre stuWechatOpenId is not null";
+		String hqlStr = "from Student where stuWechatOpenId is not null";
 		return (List<Student>)ht.find(hqlStr);
 	}
 
@@ -116,7 +116,7 @@ public class StudentDaoImpl implements StudentDao
 	@Override
 	public List<Student> getAllUnregStu() //获取所有未注册学生
 	{
-		String hqlStr = "from Student wehre stuWechatOpenId is null";
+		String hqlStr = "from Student where stuWechatOpenId is null";
 		return (List<Student>)ht.find(hqlStr);
 	}
 }

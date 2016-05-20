@@ -23,7 +23,7 @@ public class Teacher
 	private String techSex; //教师性别
 	@Column(length = 16)
 	private String techPhoneNum; //教师电话
-	@Column(length =16)
+	@Column(length = 16,nullable = false,columnDefinition = "bigint default 0")
 	private long techLastLoginTime; //上一次登陆时间，时间戳形式(ms)
 	@Column(length = 16)
 	private String techLastLoginIP; //上一次登陆IP

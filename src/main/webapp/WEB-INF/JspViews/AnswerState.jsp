@@ -1,11 +1,5 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%
-	if(session.getAttribute("user") != null) //已登陆
-	{
-		response.sendRedirect("Home.jsp");
-	}
-%>
 <html>
 <head>
    <title>登录</title>

@@ -12,6 +12,8 @@ public class LessonSession
 	@Id
 	@Column(length = 32)
 	private String lessonSessionId;
+	@Column(length = 32)
+	private String sessionName;
 	@Column(length = 1)
 	private int sessionType; //会话模式,0为注册，1为签到，2为答题
 	@ManyToOne
@@ -36,6 +38,14 @@ public class LessonSession
 	public void setLessonSessionId(String lessonSessionId) 
 	{
 		this.lessonSessionId = lessonSessionId;
+	}
+	public String getSessionName()
+	{
+		return this.sessionName;
+	}
+	public void setSessionName(String sessionName)
+	{
+		this.sessionName = sessionName;
 	}
 	public int getSessionType() 
 	{

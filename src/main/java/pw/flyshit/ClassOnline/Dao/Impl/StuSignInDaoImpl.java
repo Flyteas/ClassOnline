@@ -33,7 +33,7 @@ public class StuSignInDaoImpl implements StuSignInDao
 	@Override
 	public List<StuSignIn> findStuSignInByStudent(Student student) //查询某学生所有签到记录
 	{
-		String hqlStr = "from StuSignIn wehre stu=?";
+		String hqlStr = "from StuSignIn where stu=?";
 		return (List<StuSignIn>)ht.find(hqlStr, student);
 	}
 	
@@ -41,7 +41,7 @@ public class StuSignInDaoImpl implements StuSignInDao
 	@Override
 	public List<StuSignIn> findStuSignInBySession(LessonSession lessonSession) //查询某应答会话的所有签到记录，ASC排序
 	{
-		String hqlStr = "from StuSignIn wehre lessonSession=? order by signInOrder asc";
+		String hqlStr = "from StuSignIn where lessonSession=? order by signInOrder asc";
 		return (List<StuSignIn>)ht.find(hqlStr,lessonSession);
 	}
 	

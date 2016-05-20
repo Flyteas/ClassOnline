@@ -16,7 +16,7 @@ public class Student
 	@Column(length = 32)
 	private String stuName; //学生姓名
 	@Column(length = 2)
-	private int stuSex; //学生性别,0为男，1为女
+	private String stuSex; //学生性别,0为男，1为女
 	@Column(length = 32)
 	private String stuClass; //学生班别
 	@Column(length = 32)
@@ -26,13 +26,6 @@ public class Student
 	{
 		
 	}
-	/*public Student(String studentId,String studentName,int studentSex,String studentClass) //构造方法
-	{
-		this.stuId = studentId;
-		this.stuName = studentName;
-		this.stuSex = studentSex;
-		this.stuClass = studentClass;
-	}*/
 	/* Setter和Getter */
 	public void setStuId(String studentId)
 	{
@@ -50,11 +43,11 @@ public class Student
 	{
 		return this.stuName;
 	}
-	public void setStuSex(int studentSex)
+	public void setStuSex(String studentSex)
 	{
 		this.stuSex = studentSex;
 	}
-	public int getStuSex()
+	public String getStuSex()
 	{
 		return this.stuSex;
 	}
@@ -66,11 +59,11 @@ public class Student
 	{
 		return this.stuClass;
 	}
-	public void setStuOpenId(String studentWechatOpenId)
+	public void setStuWechatOpenId(String studentWechatOpenId)
 	{
 		this.stuWechatOpenId = studentWechatOpenId;
 	}
-	public String getStuOpenId()
+	public String getStuWechatOpenId()
 	{
 		return this.stuWechatOpenId;
 	}

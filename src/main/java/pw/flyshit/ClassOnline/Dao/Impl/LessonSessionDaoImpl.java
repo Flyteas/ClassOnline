@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import pw.flyshit.ClassOnline.Dao.LessonSessionDao;
 import pw.flyshit.ClassOnline.Domain.CourseClass;
-import pw.flyshit.ClassOnline.Domain.Lesson;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Question;
 @Repository
@@ -40,10 +39,10 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<LessonSession> findSessionByLesson(Lesson lesson) //通过课堂查找
+	public List<LessonSession> findSessionByClass(CourseClass courseClass) //通过教学班查找
 	{
-		String hqlStr = "from LessonSession where lesson=?";
-		return (List<LessonSession>)ht.find(hqlStr, lesson);
+		String hqlStr = "from LessonSession where courseClass=?";
+		return (List<LessonSession>)ht.find(hqlStr, courseClass);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -115,10 +114,10 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 	
 	@Transactional
 	@Override
-	public int deleteSessionByLesson(Lesson lesson) //删除某课堂的所有会话，返回删除条目数
+	public int deleteSessionByClass(CourseClass courseClass) //删除某教学班的所有会话，返回删除条目数
 	{
 		List<LessonSession> delSessionSet;
-		delSessionSet = this.findSessionByLesson(lesson);
+		delSessionSet = this.findSessionByClass(courseClass);
 		if(delSessionSet.size()>0)
 		{
 			ht.deleteAll(delSessionSet);

@@ -296,7 +296,7 @@ public class TeacherServiceImpl implements TeacherService
 		classMembs = courseClassMemberDao.findCourseClassMemberByCourseClass(courseClass);
 		for(int i=0;i<classMembs.size();i++)
 		{
-			if(!classMembs.get(i).getStu().getStuOpenId().isEmpty()) //已经注册
+			if(classMembs.get(i).getStu().getStuWechatOpenId() != null && !classMembs.get(i).getStu().getStuWechatOpenId().isEmpty()) //已经注册
 			{
 				regStus.add(classMembs.get(i).getStu()); //添加到结果集
 			}
@@ -319,7 +319,7 @@ public class TeacherServiceImpl implements TeacherService
 		classMembs = courseClassMemberDao.findCourseClassMemberByCourseClass(courseClass);
 		for(int i=0;i<classMembs.size();i++)
 		{
-			if(classMembs.get(i).getStu().getStuOpenId().isEmpty()) //未注册
+			if(classMembs.get(i).getStu().getStuWechatOpenId() == null || classMembs.get(i).getStu().getStuWechatOpenId().isEmpty()) //未注册
 			{
 				unregStus.add(classMembs.get(i).getStu()); //添加到结果集
 			}
@@ -340,11 +340,44 @@ public class TeacherServiceImpl implements TeacherService
 	}
 
 	@Override
-	public Teacher login(String techId, String techPassword) //登陆
+	public Teacher login(String techId, String techPassword, String loginIp) //登陆
 	{
-		return teacherDao.teacherLogin(techId, techPassword);
+		return teacherDao.teacherLogin(techId, techPassword, loginIp);
 	}
 
+	@Override
+	public List<CourseClass> getCourseClassByTech(String teacherId)  //获取某教师所有教学班
+	{
+		Teacher teacher;
+		teacher = teacherDao.findTeacherById(teacherId);
+		if(teacher == null) //教师不存在
+		{
+			return null;
+		}
+		return courseClassDao.findCourseClassByTeacher(teacher);
+	}
+
+	@Override
+	public List<LessonSession> getClassSession(String courseClassId) //获取教学班所有会话
+	{
+		List<LessonSession> Sessions = null;
+		CourseClass courseClass;
+		courseClass = courseClassDao.findCourseClassById(courseClassId);
+		if(courseClass == null) //教学班不存在
+		{
+			return null;
+		}
+		Sessions = lessonSessionDao.findSessionByClass(courseClass);
+		return Sessions;
+	}
+	
+	@Override
+	public LessonSession getSession(String sessionId) //获取会话
+	{
+		LessonSession session;
+		session = lessonSessionDao.findSessionById(sessionId);
+		return session;
+	}
 
 
 }

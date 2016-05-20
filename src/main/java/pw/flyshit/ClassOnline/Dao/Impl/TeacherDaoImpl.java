@@ -20,13 +20,26 @@ public class TeacherDaoImpl implements TeacherDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Teacher teacherLogin(String techId,String techPassword) //登陆教师帐户，失败返回NULL
+	public Teacher teacherLogin(String techId,String techPassword,String loginIp) //登陆教师帐户，失败返回NULL
 	{
 		String hqlStr = "from Teacher where techId=? and techPassword=?";
+		Teacher loginTeacher = new Teacher();
 		List<Teacher> teacherLoginResult = (List<Teacher>)ht.find(hqlStr,techId,techPassword);
 		if(teacherLoginResult.size()>0)
 		{
-			return teacherLoginResult.get(0);
+			loginTeacher.setTechId(teacherLoginResult.get(0).getTechId()); //对象拷贝
+			loginTeacher.setTechLastLoginIP(teacherLoginResult.get(0).getTechLastLoginIP());
+			loginTeacher.setTechLastLoginTime(teacherLoginResult.get(0).getTechLastLoginTime());
+			loginTeacher.setTechPassword(teacherLoginResult.get(0).getTechPassword());
+			loginTeacher.setTechPhoneNum(teacherLoginResult.get(0).getTechPhoneNum());
+			loginTeacher.setTechRealName(teacherLoginResult.get(0).getTechRealName());
+			loginTeacher.setTechRole(teacherLoginResult.get(0).getTechRole());
+			loginTeacher.setTechSex(teacherLoginResult.get(0).getTechSex());
+			
+			teacherLoginResult.get(0).setTechLastLoginTime(System.currentTimeMillis()); //更新登陆时间
+			teacherLoginResult.get(0).setTechLastLoginIP(loginIp); //更新IP
+			ht.update(teacherLoginResult.get(0));
+			return loginTeacher;
 		}
 		else
 		{
@@ -44,7 +57,7 @@ public class TeacherDaoImpl implements TeacherDao
 	@Override
 	public List<Teacher> findTeacherByName(String techRealName) //通过姓名查找
 	{
-		String hqlStr = "from Teacher wehre techRealName=?";
+		String hqlStr = "from Teacher where techRealName=?";
 		return (List<Teacher>)ht.find(hqlStr,techRealName);	
 	}
 	
@@ -52,7 +65,7 @@ public class TeacherDaoImpl implements TeacherDao
 	@Override
 	public List<Teacher> findTeacherByType(int techRole) //查找某角色的所有教师，0为管理员，1为普通教师
 	{
-		String hqlStr = "from Teacher wehre techRole=?";
+		String hqlStr = "from Teacher where techRole=?";
 		return (List<Teacher>)ht.find(hqlStr,techRole);	
 	}
 	
@@ -60,7 +73,7 @@ public class TeacherDaoImpl implements TeacherDao
 	@Override
 	public List<Teacher> findTeacherByLastIp(String techLastLoginIP) //通过最后登陆IP查找教师帐户
 	{
-		String hqlStr = "from Teacher wehre techLastLoginIP=?";
+		String hqlStr = "from Teacher where techLastLoginIP=?";
 		return (List<Teacher>)ht.find(hqlStr,techLastLoginIP);	
 	}
 	
