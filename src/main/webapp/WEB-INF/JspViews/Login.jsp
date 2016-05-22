@@ -1,5 +1,6 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
 <html>
 <head>
    <title>登录</title>
@@ -53,9 +54,11 @@
 					</div>
 				</div>
 			</form>
-			<div class="alert alert-danger <c:if test="${loginError == null}">hidden</c:if>" role="alert" id="loginErrorAlert">
+			<c:if test="${loginError != null}">
+			<div class="alert alert-danger" role="alert" id="loginErrorAlert">
         		<strong>账号或密码错误</strong>
     		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>

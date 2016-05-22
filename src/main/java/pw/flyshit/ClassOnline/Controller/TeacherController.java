@@ -9,10 +9,9 @@ import pw.flyshit.ClassOnline.Domain.StuSignIn;
 import pw.flyshit.ClassOnline.Domain.Student;
 import pw.flyshit.ClassOnline.Domain.Teacher;
 import pw.flyshit.ClassOnline.Service.TeacherService;
+import pw.flyshit.ClassOnline.Util.DateTimeConverter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +30,8 @@ public class TeacherController
 	@Autowired
 	TeacherService teacherService;
 	
+	DateTimeConverter dateTimeConverter = new DateTimeConverter();
+	
 	boolean loginCheck(HttpSession session) //检查是否处于登陆状态
 	{
 		Object teacher;
@@ -46,7 +47,6 @@ public class TeacherController
 	public ModelAndView index(HttpSession session) throws Exception //首页转跳
 	{
 		Teacher user;
-		Date lastLoginDate;
 		String lastLoginDateStr;
 		ModelAndView mv;
 		mv = new ModelAndView();
@@ -55,9 +55,7 @@ public class TeacherController
 		{
 			if(user.getTechLastLoginTime() >0 ) //等于0则是第一次登陆
 			{
-				lastLoginDate = new Date(user.getTechLastLoginTime());
-				SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				lastLoginDateStr = fm.format(lastLoginDate);
+				lastLoginDateStr = dateTimeConverter.dateTimeLongToStr(user.getTechLastLoginTime(), "yyyy-MM-dd HH:mm:ss");
 			}
 			else
 			{
@@ -111,13 +109,26 @@ public class TeacherController
 		response.sendRedirect("index.jsp");
 	}
 	
+	@RequestMapping(value = { "/SessionAdd.do" }, method = RequestMethod.GET) //添加一个会话
+	public ModelAndView addSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		String courseClassId;
+		ModelAndView mv = new ModelAndView();
+		courseClassId = request.getParameter("courseClassId");
+		mv.addObject("courseClassId",courseClassId);
+		mv.setViewName("AddSession");
+		return mv;
+	}
+	
 	@RequestMapping(value = { "/SessionStart.do" }, method = RequestMethod.POST) //开启一个会话
 	public ModelAndView startSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
-		int sessionType; //会话模式,0为注册，1为签到，2为答题
 		String courseClassId;
+		String sessionName;
+		int sessionType; //会话模式,0为注册，1为签到，2为答题
 		long beginTime;
 		long endTime;
+		
 		Question question = null;
 		List<String> errMsgs;
 		LessonSession currentSession = null;
@@ -130,39 +141,104 @@ public class TeacherController
 			return mv;
 		}
 		errMsgs = new ArrayList<String>();
-		sessionType = Integer.valueOf(request.getParameter("sessionType"));
+		
 		courseClassId = request.getParameter("courseClassId");
-		beginTime = Long.valueOf(request.getParameter("beginTime"));
-		endTime = Long.valueOf(request.getParameter("endTime"));
+		sessionName = request.getParameter("sessionName");
+		sessionType = Integer.valueOf(request.getParameter("sessionType"));
+		beginTime = dateTimeConverter.dateTimeStrToLong(request.getParameter("beginTime"),"yyyy-MM-dd HH:mm:ss");
+		endTime = dateTimeConverter.dateTimeStrToLong(request.getParameter("endTime"),"yyyy-MM-dd HH:mm:ss");
+		
 		currentSession = teacherService.getCurrentSession(courseClassId); //获取当前该教学班是正在进行的会话
 		if(currentSession != null) //存在正在进行的会话
 		{
 			errMsgs.add("该教学班存在正在进行的会话!");
-			mv.addObject("errMsgs",errMsgs);
-			mv.addObject("currentSession",currentSession);
-			mv.setViewName("SessionManage");
+			mv.setViewName("redirect:SessionList.do?courseClassId="+courseClassId);
 			return mv;
 		}
 		if(sessionType == 2) //设置问题并验证问题正确性
 		{
 			question = new Question();
-			question.setQuestionTitle(request.getParameter("qtitle"));
-			question.setOption1(request.getParameter("qoption1"));
-			question.setOption2(request.getParameter("qoption2"));
-			question.setOption3(request.getParameter("qoption3"));
-			question.setOption4(request.getParameter("qoption4"));
-			question.setOption5(request.getParameter("qoption5"));
-			question.setOption6(request.getParameter("qoption6"));
-			question.setRightAnswer(request.getParameter("qrightans"));
+			question.setQuestionTitle(request.getParameter("questionTitle"));
+			question.setQuestionType(Integer.valueOf(request.getParameter("questionType")));
 			question.setCreateTime(System.currentTimeMillis());
 			question.setQuestionId(String.valueOf(System.currentTimeMillis()));
-			question.setQuestionScore(Integer.valueOf(request.getParameter("qscore")));
-			if(question.getQuestionScore() < 0)
+			if(question.getQuestionType() == 0) //单选题
 			{
-				errMsgs.add("问题分数不能小于0!");
+				int rightAns = 0;
+				question.setOption1(request.getParameter("optionA"));
+				question.setOption2(request.getParameter("optionB"));
+				question.setOption3(request.getParameter("optionC"));
+				question.setOption4(request.getParameter("optionD"));
+				question.setOption5(request.getParameter("optionE"));
+				question.setOption6(request.getParameter("optionF"));
+				if(request.getParameter("rightSingleAns") != null)
+				{
+					rightAns = Integer.valueOf(request.getParameter("rightSingleAns"));
+				}
+				switch(rightAns)
+				{
+				case 1:
+					question.setRightAnswer("A");
+					break;
+				case 2:
+					question.setRightAnswer("B");
+					break;
+				case 3:
+					question.setRightAnswer("C");
+					break;
+				case 4:
+					question.setRightAnswer("D");
+					break;
+				case 5:
+					question.setRightAnswer("E");
+					break;
+				case 6:
+					question.setRightAnswer("F");
+					break;
+				default:
+					question.setRightAnswer("");	
+				}
 			}
-			question.setQuestionType(Integer.valueOf(request.getParameter("qtype")));
-			if(question.getQuestionType() != 0 || question.getQuestionType() != 1 || question.getQuestionType() != 2)
+			else if(question.getQuestionType() == 1) //多选题
+			{
+				String rightAns = "";
+				question.setOption1(request.getParameter("optionA"));
+				question.setOption2(request.getParameter("optionB"));
+				question.setOption3(request.getParameter("optionC"));
+				question.setOption4(request.getParameter("optionD"));
+				question.setOption5(request.getParameter("optionE"));
+				question.setOption6(request.getParameter("optionF"));
+				if(request.getParameter("optionARightFlag") != null)
+				{
+					rightAns += "A";
+				}
+				if(request.getParameter("optionBRightFlag") != null)
+				{
+					rightAns += "B";
+				}
+				if(request.getParameter("optionCRightFlag") != null)
+				{
+					rightAns += "C";
+				}
+				if(request.getParameter("optionDRightFlag") != null)
+				{
+					rightAns += "D";
+				}
+				if(request.getParameter("optionERightFlag") != null)
+				{
+					rightAns += "E";
+				}
+				if(request.getParameter("optionFRightFlag") != null)
+				{
+					rightAns += "F";
+				}
+				question.setRightAnswer(rightAns);
+			}
+			else if(question.getQuestionType() == 2) //问答题
+			{
+				question.setRightAnswer(request.getParameter("rightTextAns"));
+			}
+			else
 			{
 				errMsgs.add("问题类型错误!");
 			}
@@ -171,21 +247,18 @@ public class TeacherController
 		{
 			if(sessionType == 2) //问题会话
 			{
-				newSession = teacherService.startNewSession(sessionType, courseClassId, beginTime, endTime, question);
+				newSession = teacherService.startNewSession(sessionName,sessionType, courseClassId, beginTime, endTime, question);
 			}
 			else
 			{
-				newSession = teacherService.startNewSession(sessionType, courseClassId, beginTime, endTime);
+				newSession = teacherService.startNewSession(sessionName,sessionType, courseClassId, beginTime, endTime);
 			}
 			if(newSession == null)
 			{
 				errMsgs.add("启动会话失败! 请检查教学班是否正确");
 			}
 		}
-		mv.addObject("errMsgs",errMsgs);
-		mv.addObject("newSession",newSession);
-		mv.addObject("question",question);
-		mv.setViewName("SessionView");
+		mv.setViewName("redirect:SessionState.do?sessionId="+newSession.getLessonSessionId());
 		return mv;
 	}
 	
@@ -193,7 +266,8 @@ public class TeacherController
 	public ModelAndView stopSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //停止一个会话
 	{
 		String sessionId;
-		String msg;
+		LessonSession lessonSession = null;
+		//String msg;
 		ModelAndView mv;
 		mv = new ModelAndView();
 		if(!loginCheck(session)) //登陆状态检查
@@ -204,17 +278,45 @@ public class TeacherController
 		sessionId = request.getParameter("sessionId");
 		if(teacherService.stopSession(sessionId))
 		{
-			msg = "停止会话成功!";
+			//msg = "停止会话成功!";
+			lessonSession = teacherService.getSession(sessionId);
 		}
 		else
 		{
-			msg = "会话不存在!";
+			//msg = "会话不存在!";
 		}
-		mv.addObject("msg",msg);
-		mv.setViewName("SessionManage");
+		if(lessonSession != null)
+		{
+			mv.setViewName("redirect:SessionList.do?courseClassId="+lessonSession.getCourseClass().getCourseClassId());
+		}
+		else
+		{
+			mv.setViewName("redirect:SessionManage.do");
+		}
 		return mv;
 	}
-	
+	@RequestMapping(value = { "/SessionDel.do" }, method = RequestMethod.GET)
+	public ModelAndView delSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除一个会话
+	{
+		String sessionId;
+		String courseClassId;
+		LessonSession lessonSession;
+		ModelAndView mv = new ModelAndView();
+		sessionId = request.getParameter("sessionId");
+		lessonSession = teacherService.getSession(sessionId);
+		if(lessonSession == null)
+		{
+			mv.setViewName("redirect:SessionManage.do");
+		}
+		else
+		{
+			courseClassId = lessonSession.getCourseClass().getCourseClassId();
+			teacherService.delSession(sessionId);
+			mv.setViewName("redirect:SessionList.do?courseClassId="+courseClassId);
+		}
+		return mv;
+	}
+	/*
 	@RequestMapping(value = { "/RegStateList.do" }, method = RequestMethod.GET)
 	public ModelAndView listRegState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生注册状态
 	{
@@ -247,7 +349,7 @@ public class TeacherController
 			mv.setViewName("RegStateList");
 		}
 		return mv;
-	}
+	}*/
 	
 	@RequestMapping(value = { "/RegInfoDelete.do" }, method = RequestMethod.GET)
 	public ModelAndView deleteRegInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除学生注册信息
@@ -274,7 +376,7 @@ public class TeacherController
 		mv.setViewName("RegStateList");
 		return mv;
 	}
-	
+	/*
 	@RequestMapping(value = { "/SignInStateList.do" }, method = RequestMethod.GET)
 	public ModelAndView listSignInState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生签到状态
 	{
@@ -342,7 +444,7 @@ public class TeacherController
 		mv.addObject("question", question);
 		mv.setViewName("AnwserStateList");
 		return mv;
-	}
+	}*/
 	
 	@RequestMapping(value = { "/SessionManage.do" }, method = RequestMethod.GET)
 	public ModelAndView listClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //列出当前教师的教学班
@@ -373,6 +475,8 @@ public class TeacherController
 	{
 		String courseClassId;
 		List<LessonSession> lessonSessions;
+		LessonSession currentSession;
+		CourseClass courseClass;
 		String errMsg;
 		ModelAndView mv;
 		mv = new ModelAndView();
@@ -382,15 +486,22 @@ public class TeacherController
 			return mv;
 		}
 		courseClassId = request.getParameter("courseClassId");
-		lessonSessions = teacherService.getClassSession(courseClassId);
-		if(lessonSessions == null) //教学班不存在
+		courseClass = teacherService.getCourseClassById(courseClassId);
+		if(courseClass == null) //教学班不存在
 		{
 			errMsg = "教学班不存在!";
 			mv.addObject("errMsg",errMsg);
 			mv.setViewName("redirect:SessionManage.do");
 			return mv;
 		}
+		lessonSessions = teacherService.getClassSession(courseClassId);
+		currentSession = teacherService.getCurrentSession(courseClassId);
+		mv.addObject("courseClass",courseClass);
 		mv.addObject("lessonSessions",lessonSessions);
+		if(currentSession != null)
+		{
+			mv.addObject("currentSession",currentSession);
+		}
 		mv.setViewName("ManageSession");
 		return mv;
 	}
@@ -400,8 +511,6 @@ public class TeacherController
 		String sessionId;
 		String courseClassId;
 		LessonSession lessonSession;
-		Date SessionBeginDate;
-		Date SessionEndDate;
 		String BeginTimeStr;
 		String EndTimeStr;
 		int sessionState; //会话状态，0为正在进行，1为已结束，2为未开始
@@ -430,11 +539,8 @@ public class TeacherController
 		{
 			sessionState = -1;
 		}
-		SessionBeginDate = new Date(lessonSession.getBeginTime());
-		SessionEndDate = new Date(lessonSession.getEndTime());
-		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		BeginTimeStr = fm.format(SessionBeginDate);
-		EndTimeStr = fm.format(SessionEndDate);
+		BeginTimeStr = dateTimeConverter.dateTimeLongToStr(lessonSession.getBeginTime(),"yyyy-MM-dd HH:mm:ss");
+		EndTimeStr = dateTimeConverter.dateTimeLongToStr(lessonSession.getEndTime(),"yyyy-MM-dd HH:mm:ss");
 		mv.addObject("BeginTimeStr",BeginTimeStr);
 		mv.addObject("EndTimeStr",EndTimeStr);
 		mv.addObject("sessionState",sessionState);
@@ -485,8 +591,11 @@ public class TeacherController
 		{
 			Question question;
 			List<StuAnswer> stuAnswers;
+			List<Student> noAnsStus;
+			float involveRates; //答题率
 			question = lessonSession.getQuestion();
 			stuAnswers = teacherService.getStuAnswerByQuestionId(question.getQuestionId());
+			noAnsStus = teacherService.getNoAnsStusBySessionId(sessionId);
 			if(question.getQuestionType() == 0 || question.getQuestionType() == 1) //选择题
 			{
 				int correctCount = 0;
@@ -501,6 +610,9 @@ public class TeacherController
 				correctRates = (float)correctCount/stuAnswers.size() * 100;
 				mv.addObject("correctRates",(int)correctRates);
 			}
+			involveRates = (float)stuAnswers.size()/(stuAnswers.size()+noAnsStus.size()) * 100;
+			mv.addObject("involveRates",(int)involveRates);
+			mv.addObject("noAnsStus",noAnsStus);
 			mv.addObject("stuAnswers",stuAnswers);
 			mv.setViewName("AnswerState");
 		}

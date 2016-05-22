@@ -53,7 +53,7 @@ public class TeacherServiceImpl implements TeacherService
 	TeacherDao teacherDao;
 
 	@Override
-	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime)  //开启一个新的会话
+	public LessonSession startNewSession(String sessionName,int sessionType, String courseClassId, long beginTime, long endTime)  //开启一个新的会话
 	{
 		CourseClass courseClass;
 		courseClass = courseClassDao.findCourseClassById(courseClassId);
@@ -62,6 +62,7 @@ public class TeacherServiceImpl implements TeacherService
 			return null;
 		}
 		LessonSession lessonSession = new LessonSession();
+		lessonSession.setSessionName(sessionName);
 		lessonSession.setLessonSessionId(String.valueOf(System.currentTimeMillis())); //会话ID设置为当前时间戳
 		lessonSession.setBeginTime(beginTime);
 		lessonSession.setEndTime(endTime);
@@ -75,7 +76,7 @@ public class TeacherServiceImpl implements TeacherService
 	}
 
 	@Override
-	public LessonSession startNewSession(int sessionType, String courseClassId,  long beginTime, long endTime, Question question) 
+	public LessonSession startNewSession(String sessionName,int sessionType, String courseClassId,  long beginTime, long endTime, Question question) 
 	{
 		CourseClass courseClass;
 		courseClass = courseClassDao.findCourseClassById(courseClassId);
@@ -85,6 +86,7 @@ public class TeacherServiceImpl implements TeacherService
 		}
 		questionDao.addQuestion(question);
 		LessonSession lessonSession = new LessonSession();
+		lessonSession.setSessionName(sessionName);
 		lessonSession.setLessonSessionId(String.valueOf(System.currentTimeMillis())); //会话ID设置为当前时间戳
 		lessonSession.setBeginTime(beginTime);
 		lessonSession.setEndTime(endTime);
@@ -377,6 +379,47 @@ public class TeacherServiceImpl implements TeacherService
 		LessonSession session;
 		session = lessonSessionDao.findSessionById(sessionId);
 		return session;
+	}
+
+	@Override
+	public List<Student> getNoAnsStusBySessionId(String sessionId) //查询某问题未回答学生
+	{
+		LessonSession session;
+		List<CourseClassMember> classStus;
+		List<StuAnswer> stuAns;
+		List<Student> noAnsStus = new ArrayList<Student>();
+		session = lessonSessionDao.findSessionById(sessionId);
+		classStus = courseClassMemberDao.findCourseClassMemberByCourseClass(session.getCourseClass());
+		stuAns = stuAnswerDao.findStuAnswerByQuestion(session.getQuestion());
+		for(int i=0;i<classStus.size();i++)
+		{
+			boolean isAns = false;
+			for(int j=0;j<stuAns.size();j++)
+			{
+				if(classStus.get(i).getStu().getStuId().equals(stuAns.get(j).getStudent().getStuId()))
+				{
+					isAns = true;
+					break;
+				}
+			}
+			if(!isAns)
+			{
+				noAnsStus.add(classStus.get(i).getStu());
+			}
+		}
+		return noAnsStus;
+	}
+
+	@Override
+	public CourseClass getCourseClassById(String courseClassId) //通过ID取教学班
+	{
+		return courseClassDao.findCourseClassById(courseClassId);
+	}
+
+	@Override
+	public boolean delSession(String sessionId) //删除一个会话
+	{
+		return lessonSessionDao.deleteSessionById(sessionId);
 	}
 
 

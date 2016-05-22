@@ -41,7 +41,7 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 	@Override
 	public List<LessonSession> findSessionByClass(CourseClass courseClass) //通过教学班查找
 	{
-		String hqlStr = "from LessonSession where courseClass=?";
+		String hqlStr = "from LessonSession where courseClass=? order by endTime desc";
 		return (List<LessonSession>)ht.find(hqlStr, courseClass);
 	}
 	

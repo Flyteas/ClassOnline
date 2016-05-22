@@ -16,9 +16,10 @@ public interface TeacherService
 	public LessonSession getCurrentSession(String courseClassId); //获取某教学班的当前会话
 	public List<LessonSession> getClassSession(String courseClassId); //获取教学班所有会话
 	public LessonSession getSession(String sessionId); //获取一个会话
-	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime); //开启一个新的会话
-	public LessonSession startNewSession(int sessionType, String courseClassId, long beginTime, long endTime, Question question); //开启一个新的会话
+	public LessonSession startNewSession(String sessionName,int sessionType, String courseClassId, long beginTime, long endTime); //开启一个新的会话
+	public LessonSession startNewSession(String sessionName,int sessionType, String courseClassId, long beginTime, long endTime, Question question); //开启一个新的会话
 	public boolean stopSession(String lessonSessionId); //停止一个会话
+	public boolean delSession(String sessionId); //删除一个会话，级联删除
 	public List<Student> getRegisteredStudent(); //获取所有已注册学生
 	public List<Student> getUnregisterStudent(); //获取所有未注册学生
 	public List<Student> getRegStusByCourseClass(String courseClassId); //查询某教学班所有已注册学生
@@ -30,6 +31,8 @@ public interface TeacherService
 	public List<StuAnswer> getStuAnswerByQuestionId(String questionId); //根据问题ID获取答题记录
 	public List<StuAnswer> getCorrectAnsBySessionId(String lessonSessionId); //根据会话ID获取正确答题记录
 	public List<StuAnswer> getCorrectAnsByQuestionId(String questionId); //根据问题ID获取正确答题记录
+	public List<Student> getNoAnsStusBySessionId(String sessionId); //查询某问题未回答学生
 	public Question getQuestionBySessionId(String sessionId); //根据SessionId获取问题
 	public List<CourseClass> getCourseClassByTech(String teacherId); //获取某教师所有教学班
+	public CourseClass getCourseClassById(String courseClassId); //通过ID取教学班
 }
