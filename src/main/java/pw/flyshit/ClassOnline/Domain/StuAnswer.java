@@ -22,7 +22,8 @@ public class StuAnswer
 	private boolean answerCorrect; //答案是否正确
 	@Column(length = 16)
 	private long answerTime; //回答时间
-	
+	@Column(length = 16)
+	private int answerOrder; //回答顺序
 	public StuAnswer()
 	{
 		
@@ -86,6 +87,16 @@ public class StuAnswer
 	public void setAnswerTime(long answerTime) 
 	{
 		this.answerTime = answerTime;
+	}
+	
+	public int getAnswerOrder()
+	{
+		return this.answerOrder;
+	}
+	
+	public void setAnswerOrder(int answerOrder)
+	{
+		this.answerOrder = answerOrder;
 	}
 	
 }

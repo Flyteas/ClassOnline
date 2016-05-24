@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+
+
 /* 课堂应答会话实体类 */
 @Entity
 @Table(name = "LessonSession")
@@ -16,10 +19,10 @@ public class LessonSession
 	private String sessionName;
 	@Column(length = 1)
 	private int sessionType; //会话模式,0为注册，1为签到，2为答题
-	@ManyToOne
+	@ManyToOne //级联删除和更新
 	//private Lesson lesson;
 	private CourseClass courseClass;
-	@ManyToOne(optional = true) //问题可为空
+	@ManyToOne(optional = true) //问题可为空，级联删除和更新
 	private Question question;
 	@Column(length = 16)
 	private long beginTime;

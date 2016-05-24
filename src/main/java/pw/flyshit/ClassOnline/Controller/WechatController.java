@@ -7,10 +7,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import pw.flyshit.ClassOnline.Service.StudentService;
 import pw.flyshit.WechatSDK.Servlet.WechatServletSupport;
 import pw.flyshit.WechatSDK.Msg.BaseMsg;
 import pw.flyshit.WechatSDK.Msg.TextMsg;
@@ -18,6 +20,8 @@ import pw.flyshit.WechatSDK.Msg.Req.TextReqMsg;
 @Controller
 public class WechatController extends WechatServletSupport
 {
+	@Autowired
+	private StudentService studentService;
 	private static final long serialVersionUID = 233L;
 
 	@RequestMapping(value = { "/Wechat.do" }, method = RequestMethod.GET) 
@@ -39,7 +43,9 @@ public class WechatController extends WechatServletSupport
 	@Override
 	protected BaseMsg handleTextMsg(TextReqMsg msg) //处理文本消息
 	{
-		return new TextMsg(msg.getMsgId() + ":" + msg.getContent());
+		String responseMsg;
+		responseMsg = studentService.handleStuMsg(msg.getFromUserName(), msg.getContent()); //处理消息
+		return new TextMsg(responseMsg);
 	}
 
 }

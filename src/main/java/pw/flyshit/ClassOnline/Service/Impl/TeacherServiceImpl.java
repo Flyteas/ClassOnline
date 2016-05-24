@@ -32,25 +32,25 @@ import pw.flyshit.ClassOnline.Service.TeacherService;
 public class TeacherServiceImpl implements TeacherService
 {
 	@Autowired
-	CourseClassDao courseClassDao;
+	private CourseClassDao courseClassDao;
 	@Autowired
-	CourseClassMemberDao courseClassMemberDao;
+	private CourseClassMemberDao courseClassMemberDao;
 	@Autowired
-	CourseDao courseDao;
+	private CourseDao courseDao;
 	@Autowired
-	LessonDao lessonDao;
+	private LessonDao lessonDao;
 	@Autowired
-	LessonSessionDao lessonSessionDao;
+	private LessonSessionDao lessonSessionDao;
 	@Autowired
-	QuestionDao questionDao;
+	private QuestionDao questionDao;
 	@Autowired
-	StuAnswerDao stuAnswerDao;
+	private StuAnswerDao stuAnswerDao;
 	@Autowired
-	StudentDao studentDao;
+	private StudentDao studentDao;
 	@Autowired
-	StuSignInDao stuSignInDao;
+	private StuSignInDao stuSignInDao;
 	@Autowired
-	TeacherDao teacherDao;
+	private TeacherDao teacherDao;
 
 	@Override
 	public LessonSession startNewSession(String sessionName,int sessionType, String courseClassId, long beginTime, long endTime)  //开启一个新的会话

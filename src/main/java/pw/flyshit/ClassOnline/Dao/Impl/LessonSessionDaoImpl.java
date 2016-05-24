@@ -10,12 +10,16 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import pw.flyshit.ClassOnline.Dao.LessonSessionDao;
+import pw.flyshit.ClassOnline.Dao.StuSignInDao;
 import pw.flyshit.ClassOnline.Domain.CourseClass;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Question;
+import pw.flyshit.ClassOnline.Domain.StuSignIn;
 @Repository
 public class LessonSessionDaoImpl implements LessonSessionDao
 {
+	@Autowired
+	StuSignInDao stuSignInDao;
 	private HibernateTemplate ht;
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) 
@@ -95,6 +99,8 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 		{
 			return false;
 		}
+		List<StuSignIn> stuSignIns = stuSignInDao.findStuSignInBySession(delSession);
+		ht.deleteAll(stuSignIns);
 		ht.delete(delSession);
 		return true;
 	}

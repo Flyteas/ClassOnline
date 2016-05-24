@@ -28,9 +28,9 @@ public class TeacherController
 {
 
 	@Autowired
-	TeacherService teacherService;
+	private TeacherService teacherService;
 	
-	DateTimeConverter dateTimeConverter = new DateTimeConverter();
+	private DateTimeConverter dateTimeConverter = new DateTimeConverter();
 	
 	boolean loginCheck(HttpSession session) //检查是否处于登陆状态
 	{
@@ -355,7 +355,8 @@ public class TeacherController
 	public ModelAndView deleteRegInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除学生注册信息
 	{
 		String studentId;
-		String msg;
+		String sessionId;
+		//String msg;
 		ModelAndView mv;
 		mv = new ModelAndView();
 		if(!loginCheck(session)) //登录状态检查
@@ -364,16 +365,17 @@ public class TeacherController
 			return mv;
 		}
 		studentId = request.getParameter("studentId");
+		sessionId = request.getParameter("sessionId");
 		if(!teacherService.deleteStuRegInfo(studentId)) //学生不存在
 		{
-			msg = "此学生不存在!";
+			//msg = "此学生不存在!";
 		}
 		else
 		{
-			msg = "清空学生" + studentId + "注册信息成功!";
+			//msg = "清空学生" + studentId + "注册信息成功!";
 		}
-		mv.addObject("msg",msg);
-		mv.setViewName("RegStateList");
+		//mv.addObject("msg",msg);
+		mv.setViewName("redirect:SessionState.do?sessionId="+sessionId);
 		return mv;
 	}
 	/*

@@ -22,15 +22,19 @@ public class StudentDaoImpl implements StudentDao
 	
 	@Transactional
 	@Override
-	public int studentReg(String stuId,String openId) //注册学生OpenID，成功返回0,已注册返回1,无此学生ID返回2
+	public int studentReg(String stuId,String openId) //注册学生OpenID，成功返回0,已注册返回1,已注册但不是同一个OpenId返回2，无此学生ID返回3
 	{
 		Student regStu;
 		regStu = this.findStudentById(stuId);
 		if(regStu == null) //无此学生
 		{
+			return 3;
+		}
+		if(regStu.getStuWechatOpenId() != null && !regStu.getStuWechatOpenId().isEmpty() && !regStu.getStuWechatOpenId().equals(openId)) //OpenId非空，但不是同一个OpenId，即已被被人注册
+		{
 			return 2;
 		}
-		if(!regStu.getStuWechatOpenId().isEmpty()) //OpenId非空，即已注册
+		if(regStu.getStuWechatOpenId() != null && !regStu.getStuWechatOpenId().isEmpty() && regStu.getStuWechatOpenId().equals(openId)) //OpenId非空，与传入的OpenId相同，即学生本人已注册过
 		{
 			return 1;
 		}
@@ -74,7 +78,7 @@ public class StudentDaoImpl implements StudentDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Student> findStudentByOpenId(String stuOpenId) //通过OpenId查询学生，不存在返回null
+	public List<Student> findStudentByOpenId(String stuOpenId) //通过OpenId查询学生，不存在返回空
 	{
 		String hqlStr = "from Student where stuWechatOpenId=?";
 		return (List<Student>)ht.find(hqlStr, stuOpenId);

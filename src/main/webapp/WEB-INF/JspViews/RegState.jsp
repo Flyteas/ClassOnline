@@ -150,6 +150,9 @@
 						<th>
 							OpenId
 						</th>
+						<th>
+							操作
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -169,6 +172,9 @@
 						</td>
 						<td>
 							<c:out value="${regStu.stuWechatOpenId}"/>
+						</td>
+						<td>
+							<button type="button" class="btn btn-success btn" onclick="delStuRegInfoSubmit('RegInfoDelete.do?studentId=${regStu.stuId}&sessionId=${lessonSession.lessonSessionId}','${regStu.stuName}')">重置注册</button>
 						</td>
 					</tr>
 					</c:forEach>	
@@ -191,9 +197,6 @@
 						<th>
 							学生班级
 						</th>
-						<th>
-							OpenId
-						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -210,9 +213,6 @@
 						</td>
 						<td>
 							<c:out value="${unregStu.stuClass}"/>
-						</td>
-						<td>
-							<c:out value="${unregStu.stuWechatOpenId}"/>
 						</td>
 					</tr>
 					</c:forEach>	

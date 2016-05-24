@@ -38,6 +38,14 @@ function delSessionSubmit(delUrl)
 		}
 }
 
+function delStuRegInfoSubmit(delUrl,stuName)
+{
+	if(confirm('确定重置学生 '+stuName+' 的注册信息?\n重置注册信息后学生可使用微信重新注册'))
+	{
+		location.href(delUrl);
+	}
+}
+
 function stopSessionSubmit(stopUrl)
 {
 	if(confirm('确定停止会话?'))

@@ -232,6 +232,9 @@
 							是否正确
 						</th>
 						<th>
+							回答顺序
+						</th>
+						<th>
 							回答时间
 						</th>
 					</tr>
@@ -250,6 +253,9 @@
 						</td>
 						<td>
 							<c:if test="${stuAnswer.answerCorrect}">正确</c:if>
+						</td>
+						<td>
+							<c:out value="${stuAnswer.answerOrder}"/>
 						</td>
 						<td>
 							<script><c:out value="timestampToDateStr(${stuAnswer.answerTime})"/></script>

@@ -31,17 +31,17 @@ public class StuAnswerDaoImpl implements StuAnswerDao
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<StuAnswer> findStuAnswerByQuestion(Question question) //查找某问题的所有回答
+	public List<StuAnswer> findStuAnswerByQuestion(Question question) //查找某问题的所有回答，按时间升序排序，按回答顺序升序排序
 	{
-		String hqlStr = "from StuAnswer where question=?";
+		String hqlStr = "from StuAnswer where question=? order by answerOrder asc";
 		return (List<StuAnswer>)ht.find(hqlStr, question);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<StuAnswer> findCorrectStuAnswerByQuestion(Question question) //查找某问题的所有正确回答
+	public List<StuAnswer> findCorrectStuAnswerByQuestion(Question question) //查找某问题的所有正确回答，按回答顺序升序排序
 	{
-		String hqlStr = "from StuAnswer where answerCorrect=? and question=?";
+		String hqlStr = "from StuAnswer where answerCorrect=? and question=? order by answerOrder asc";
 		return (List<StuAnswer>)ht.find(hqlStr,true,question);
 	}
 	
