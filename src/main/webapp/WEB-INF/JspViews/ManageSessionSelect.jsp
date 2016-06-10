@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
@@ -11,7 +11,6 @@
    <script src="resources/js/common.js"></script>
 </head>
 <body>
-
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -72,53 +71,19 @@
 		<div class="col-md-4 column">
 		</div>
 		<div class="col-md-4 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							课程名称
-						</th>
-						<th>
-							${courseClass.course.courseName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							教学班
-						</td>
-						<td>
-							${courseClass.courseClassId}
-						</td>
-					</tr>	
-					<tr class="info">
-						<td>
-							当前会话
-						</td>
-						<td>
-							<c:if test="${currentSession == null}">无</c:if>
-							<c:if test="${currentSession != null}">
-							${currentSession.sessionName}:${currentSession.lessonSessionId}
-							</c:if>
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-			
-			<form role="form" id="sessionForm" action="SessionState.do" method="get">
+			<form role="form" id="courseClassForm" action="SessionList.do" method="get">
 				<div class="form-group">
-      				<label for="name">会话列表</label>
-      				<select class="form-control" id="sessionId" name="sessionId">
-         				<c:forEach var="lessonSession" items="${lessonSessions}">
-							<option value="<c:out value="${lessonSession.lessonSessionId}"/>"><c:out value="${lessonSession.sessionName}:${lessonSession.lessonSessionId}"/></option>
+      				<label for="name">教学班</label>
+      				<select class="form-control" id="courseClassId" name="courseClassId">
+         				<c:forEach var="courseClass" items="${courseClasses}">
+							<option value="<c:out value="${courseClass.courseClassId}"/>"><c:out value="${courseClass.course.courseName}:${courseClass.courseClassId}"/></option>
 						</c:forEach>
       				</select>
       			</div>
       		</form>
-      		<c:if test="${fn:length(lessonSessions) == 0}">
-      		<div class="alert alert-danger" role="alert" id="loginErrorAlert">
-        		<strong>无会话!</strong>
+      		<c:if test="${fn:length(courseClasses) == 0}">
+      		<div class="alert alert-danger" role="alert" id="noClassAlert">
+        		<strong>无教学班!</strong>
     		</div>
     		</c:if>
 		</div>
@@ -126,25 +91,12 @@
 		</div>
 	</div>
 	<div class="row clearfix">
-		<div class="col-md-4 column">
+		<div class="col-md-5 column">
 		</div>
 		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-    		<button type="button" class="btn btn-success btn-lg" onclick="manageSessionSubmit()"><strong>&nbsp;&nbsp;管理会话&nbsp;&nbsp;</strong></button>
+    		 <button type="button" class="btn btn-success btn-lg" onclick="classSelectSubmit()"><strong>&nbsp;&nbsp;选择教学班&nbsp;&nbsp;</strong></button>
 		</div>
-		<c:if test="${currentSession == null}">
-		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-			<button type="button" class="btn btn-success btn-lg" onclick="addSessionSubmit('SessionAdd.do?courseClassId=${courseClass.courseClassId}')"><strong>&nbsp;&nbsp;添加会话&nbsp;&nbsp;</strong></button>
-		</div>
-		</c:if>
-		<c:if test="${currentSession != null}">
-		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-			<button type="button" class="btn btn-success btn-lg" onclick="manageCurrentSessionSubmit('SessionState.do?sessionId=${currentSession.lessonSessionId}')"><strong>&nbsp;&nbsp;当前会话&nbsp;&nbsp;</strong></button>
-		</div>
-		</c:if>
-		<div class="col-md-4 column">
+		<div class="col-md-5 column">
 		</div>
 	</div>
 </div>

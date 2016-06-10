@@ -1,11 +1,14 @@
 package pw.flyshit.ClassOnline.Dao.Impl;
 
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
+
 import pw.flyshit.ClassOnline.Dao.TeacherDao;
 import pw.flyshit.ClassOnline.Domain.Teacher;
 @Repository
@@ -87,7 +90,14 @@ public class TeacherDaoImpl implements TeacherDao
 		{
 			return false;
 		}
-		ht.delete(deleteTeacher);
+		try
+		{
+			ht.delete(deleteTeacher);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -95,7 +105,45 @@ public class TeacherDaoImpl implements TeacherDao
 	@Override
 	public boolean addTeacher(Teacher teacher) //添加教师
 	{
-		ht.save(teacher);
+		try
+		{
+			ht.save(teacher);
+		}
+		catch(HibernateException e) //保存失败
+		{
+			return false;
+		}
 		return true;
+	}
+
+	@Override
+	public boolean modifyTeacher(Teacher teacher) //修改教师信息
+	{
+		try
+		{
+			ht.update(teacher);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Teacher> searchTeacher(String keyword) 
+	{
+		String hql;
+		if(keyword.isEmpty())
+		{
+			hql = "from Teacher";
+			return (List<Teacher>)ht.find(hql);
+		}
+		else
+		{
+			hql = "from Teacher where techId like ? or techRealName like ?";
+			return (List<Teacher>)ht.find(hql, "%"+keyword+"%","%"+keyword+"%");
+		}
 	}
 }

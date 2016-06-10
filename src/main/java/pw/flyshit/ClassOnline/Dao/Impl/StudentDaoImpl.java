@@ -3,6 +3,7 @@ package pw.flyshit.ClassOnline.Dao.Impl;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -53,7 +54,7 @@ public class StudentDaoImpl implements StudentDao
 		{
 			return 2;
 		}
-		if(modifyStu.getStuWechatOpenId().isEmpty()) //OpenId为空，即未注册，不需要清空注册信息
+		if(modifyStu.getStuWechatOpenId() == null || modifyStu.getStuWechatOpenId().isEmpty()) //OpenId为空，即未注册，不需要清空注册信息
 		{
 			return 1;
 		}
@@ -94,7 +95,14 @@ public class StudentDaoImpl implements StudentDao
 		{
 			return false;
 		}
-		ht.delete(delStu);
+		try
+		{
+			ht.delete(delStu);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -102,7 +110,14 @@ public class StudentDaoImpl implements StudentDao
 	@Override
 	public boolean addStudent(Student newStudent) //添加学生
 	{
-		ht.save(newStudent);
+		try
+		{
+			ht.save(newStudent);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 
@@ -122,5 +137,36 @@ public class StudentDaoImpl implements StudentDao
 	{
 		String hqlStr = "from Student where stuWechatOpenId is null";
 		return (List<Student>)ht.find(hqlStr);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Student> searchStu(String keyword) 
+	{
+		String hql;
+		if(keyword.isEmpty())
+		{
+			hql = "from Student";
+			return (List<Student>)ht.find(hql);
+		}
+		else
+		{
+			hql = "from Student where stuId like ? or stuName like ?";
+			return (List<Student>)ht.find(hql,"%"+keyword+"%","%"+keyword+"%");
+		}
+	}
+
+	@Override
+	public boolean modifyStu(Student stu) 
+	{
+		try
+		{
+			ht.update(stu);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
+		return true;
 	}
 }

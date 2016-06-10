@@ -18,10 +18,14 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>appServlet</servlet-name>
-    <url-pattern>*.json</url-pattern>
+    <url-pattern>*.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>appServlet</servlet-name>
-    <url-pattern>*.do</url-pattern>
+    <url-pattern>/404</url-pattern>
   </servlet-mapping>
+  <error-page>
+      <error-code>404</error-code>
+      <location>/404</location>
+  </error-page>
 </web-app>

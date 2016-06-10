@@ -23,18 +23,18 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<c:if test="${user.techRole == '1'}" >
-						<li class="active">
+						<li>
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManage.do">班级管理</a>
 						</li>
 						</c:if>
 						<c:if test="${user.techRole == '0'}" >
-						<li class="active">
+						<li>
 							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
@@ -69,82 +69,98 @@
 	</div>
 	<br><br><br><br>
 	<div class="row clearfix">
-		<div class="col-md-4 column">
+		<div class="col-md-3 column">
 		</div>
-		<div class="col-md-4 column">
+		<div class="col-md-6 column">
+			<form class="form-horizontal" role="form" action="ClassManageAdmin.do" method="post">
+				<div class="form-group">
+					 <label class="col-sm-3 control-label" for="inputId">教学班ID</label>
+					<div class="col-sm-6">
+						<input class="form-control" id="clsId" name="clsId" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">搜索教学班</button>
+						 &nbsp;&nbsp;
+						 <button class="btn btn-success btn-lg" type="button" onclick="window.open('ClassAdd.do')">添加教学班</button>
+					</div>
+				</div>
+			</form>
+			<c:if test="${msg == '0'}">
+      		<div class="alert alert-success col-sm-10" role="alert" id="delSuccessAlert">
+        		<strong>删除成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '1'}">
+      		<div class="alert alert-danger col-sm-10" role="alert" id="delFailAlert">
+        		<strong>删除失败</strong>
+    		</div>
+    		</c:if>
+		</div>
+	</div>
+	<br><br><br>
+	<div class="row clearfix">
+		<div class="col-md-1 column">
+		</div>
+		<div class="col-md-10 column">
+			<label for="TableName">教学班列表</label><br>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
 						<th>
+							班级ID
+						</th>
+						<th>
 							课程名称
 						</th>
 						<th>
-							${courseClass.course.courseName}
+							任课教师
+						</th>
+						<th>
+							课程ID
+						</th>
+						<th>
+							教师ID
+						</th>
+						<th>
+							操作
 						</th>
 					</tr>
 				</thead>
 				<tbody>
+				<c:forEach var="cls" items="${clses}">
 					<tr class="success">
 						<td>
-							教学班
+							<c:out value="${cls.courseClassId}"/>
 						</td>
 						<td>
-							${courseClass.courseClassId}
-						</td>
-					</tr>	
-					<tr class="info">
-						<td>
-							当前会话
+							<c:out value="${cls.course.courseName}"/>
 						</td>
 						<td>
-							<c:if test="${currentSession == null}">无</c:if>
-							<c:if test="${currentSession != null}">
-							${currentSession.sessionName}:${currentSession.lessonSessionId}
-							</c:if>
+							<c:out value="${cls.teacher.techRealName}"/>
 						</td>
-					</tr>	
+						<td>
+							<c:out value="${cls.course.courseId}" />
+						</td>
+						<td>
+							<c:out value="${cls.teacher.techId}" />
+						</td>
+						<td>
+							<button type="button" class="btn btn-success btn-xs" onclick="window.open('ClassModify.do?clsId=${cls.courseClassId}')">修改班级</button>
+							<button type="button" class="btn btn-success btn-xs" onclick="delClsSubmit('ClassDel.do?clsId=${cls.courseClassId}','${cls.courseClassId}')">删除班级</button>
+						</td>
+					</tr>
+					</c:forEach>	
 				</tbody>
 			</table>
-			
-			<form role="form" id="sessionForm" action="SessionState.do" method="get">
-				<div class="form-group">
-      				<label for="name">会话列表</label>
-      				<select class="form-control" id="sessionId" name="sessionId">
-         				<c:forEach var="lessonSession" items="${lessonSessions}">
-							<option value="<c:out value="${lessonSession.lessonSessionId}"/>"><c:out value="${lessonSession.sessionName}:${lessonSession.lessonSessionId}"/></option>
-						</c:forEach>
-      				</select>
-      			</div>
-      		</form>
-      		<c:if test="${fn:length(lessonSessions) == 0}">
-      		<div class="alert alert-danger" role="alert" id="loginErrorAlert">
-        		<strong>无会话!</strong>
+      		<c:if test="${clses != null && fn:length(clses) == 0}">
+      		<div class="alert alert-danger" role="alert" id="noStuAlert">
+        		<strong>搜索结果为空</strong>
     		</div>
     		</c:if>
 		</div>
-		<div class="col-md-4 column">
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div class="col-md-4 column">
-		</div>
-		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-    		<button type="button" class="btn btn-success btn-lg" onclick="manageSessionSubmit()"><strong>&nbsp;&nbsp;管理会话&nbsp;&nbsp;</strong></button>
-		</div>
-		<c:if test="${currentSession == null}">
-		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-			<button type="button" class="btn btn-success btn-lg" onclick="addSessionSubmit('SessionAdd.do?courseClassId=${courseClass.courseClassId}')"><strong>&nbsp;&nbsp;添加会话&nbsp;&nbsp;</strong></button>
-		</div>
-		</c:if>
-		<c:if test="${currentSession != null}">
-		<div class="col-md-2 column">
-			&nbsp;&nbsp;&nbsp;
-			<button type="button" class="btn btn-success btn-lg" onclick="manageCurrentSessionSubmit('SessionState.do?sessionId=${currentSession.lessonSessionId}')"><strong>&nbsp;&nbsp;当前会话&nbsp;&nbsp;</strong></button>
-		</div>
-		</c:if>
-		<div class="col-md-4 column">
+		<div class="col-md-1 column">
 		</div>
 	</div>
 </div>

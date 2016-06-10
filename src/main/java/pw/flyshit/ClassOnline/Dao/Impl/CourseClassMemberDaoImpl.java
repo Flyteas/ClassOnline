@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -55,7 +56,14 @@ public class CourseClassMemberDaoImpl implements CourseClassMemberDao
 		{
 			return false;
 		}
-		ht.delete(delCourClassMem);
+		try
+		{
+			ht.delete(delCourClassMem);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -99,5 +107,27 @@ public class CourseClassMemberDaoImpl implements CourseClassMemberDao
 		}
 		ht.save(courseClassMember);
 		return 0;
+	}
+
+	@Transactional
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean delMembByStuAndCour(Student stu, CourseClass courClass) //删除教学班某学生
+	{
+		String hqlStr = "from CourseClassMember where stu=? and courClass=?";
+		List<CourseClassMember> membs = (List<CourseClassMember>)ht.find(hqlStr, stu,courClass);
+		if(membs.size() == 0)
+		{
+			return false;
+		}
+		try
+		{
+			ht.deleteAll(membs);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
+		return true;
 	}
 }

@@ -256,12 +256,34 @@ public class StudentServiceImpl implements StudentService
 		{
 			String stuAnsStr = stuAns.getAnswer();
 			String rightAnsStr = question.getRightAnswer();
+			stuAnsStr = stuAnsStr.replace('1', 'A');
+			stuAnsStr = stuAnsStr.replace('2', 'B');
+			stuAnsStr = stuAnsStr.replace('3', 'C');
+			stuAnsStr = stuAnsStr.replace('4', 'D');
+			stuAnsStr = stuAnsStr.replace('5', 'E');
+			stuAnsStr = stuAnsStr.replace('6', 'F');
 			stuAnsStr = stuAnsStr.toUpperCase(); //转换成大写
 			rightAnsStr = rightAnsStr.toUpperCase(); //转换成大写
+			for(int i=0;i<stuAnsStr.length();i++) //检查答案合法性
+			{
+				String ansCheckRange = "ABCDEF";
+				if(ansCheckRange.indexOf(stuAnsStr.charAt(i)) == -1) //答案格式不合格
+				{
+					responseMsg = "回答失败!\n无此选项!";
+					return responseMsg;
+				}
+			}
 			if(stuAnsStr.length() != rightAnsStr.length())
 			{
 				stuAns.setAnswerCorrect(false);
-				responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				if(stuAnswerDao.addStuAnswer(stuAns))
+				{
+					responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				}
+				else
+				{
+					responseMsg = "回答失败!";
+				}
 			}
 			else
 			{
@@ -291,11 +313,25 @@ public class StudentServiceImpl implements StudentService
 				}
 				if(stuAns.isAnswerCorrect())
 				{
-					responseMsg = "回答成功!\n答案正确!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+					if(stuAnswerDao.addStuAnswer(stuAns))
+					{
+						responseMsg = "回答成功!\n答案正确!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+					}
+					else
+					{
+						responseMsg = "回答失败!";
+					}
 				}
 				else
 				{
-					responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+					if(stuAnswerDao.addStuAnswer(stuAns))
+					{
+						responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+					}
+					else
+					{
+						responseMsg = "回答失败!";
+					}
 				}
 			}
 		}
@@ -303,15 +339,46 @@ public class StudentServiceImpl implements StudentService
 		{
 			String stuAnsStr = stuAns.getAnswer();
 			String rightAnsStr = question.getRightAnswer();
+			stuAnsStr = stuAnsStr.replace('1', 'A');
+			stuAnsStr = stuAnsStr.replace('2', 'B');
+			stuAnsStr = stuAnsStr.replace('3', 'C');
+			stuAnsStr = stuAnsStr.replace('4', 'D');
+			stuAnsStr = stuAnsStr.replace('5', 'E');
+			stuAnsStr = stuAnsStr.replace('6', 'F');
 			stuAnsStr = stuAnsStr.toUpperCase(); //转换成大写
 			rightAnsStr = rightAnsStr.toUpperCase(); //转换成大写
+			for(int i=0;i<stuAnsStr.length();i++) //检查答案合法性
+			{
+				String ansCheckRange = "ABCDEF";
+				if(stuAnsStr.length() > 1 || ansCheckRange.indexOf(stuAnsStr) == -1) //答案格式不合格
+				{
+					responseMsg = "回答失败!\n无此选项!";
+					return responseMsg;
+				}
+			}
 			if(stuAnsStr.equals(rightAnsStr)) //答案正确
 			{
-				responseMsg = "回答成功!\n答案正确!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				stuAns.setAnswerCorrect(true);
+				if(stuAnswerDao.addStuAnswer(stuAns))
+				{
+					responseMsg = "回答成功!\n答案正确!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				}
+				else
+				{
+					responseMsg = "回答失败!";
+				}
 			}
 			else //答案错误
 			{
-				responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				stuAns.setAnswerCorrect(false);
+				if(stuAnswerDao.addStuAnswer(stuAns))
+				{
+					responseMsg = "回答成功!\n答案错误!\n回答顺序  " + String.valueOf(stuAns.getAnswerOrder());
+				}
+				else
+				{
+					responseMsg = "回答失败!";
+				}
 			}
 		}
 		else

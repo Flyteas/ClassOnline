@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -7,6 +7,7 @@
    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
    <script src="resources/js/jquery-1.12.2.min.js"></script>
    <script src="resources/js/bootstrap.min.js"></script>
+   <script src="resources/js/common.js"></script>
 </head>
 <body>
 <div class="container">
@@ -23,7 +24,7 @@
 						<li>
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManage.do">班级管理</a>
 						</li>
 						</c:if>
@@ -34,7 +35,7 @@
 						<li>
 							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="StudentManage.do">学生管理</a>
 						</li>
 						<li>
@@ -69,53 +70,58 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.techRealName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							当前角色
-						</td>
-						<td>
-						<c:if test="${user.techRole == '0'}" >
-							管理员
-						</c:if>
-						<c:if test="${user.techRole == '1'}" >
-							教师
-						</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.techLastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="StudentAdd.do" onsubmit="return checkStudentAdd(this)" method="post">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuId">学生学号</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuId" name="stuId" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuName">学生姓名</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuName" name="stuName" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuSex">学生性别</label>
+					<div class="col-sm-7">
+						<select class="form-control" id="stuSex" name="stuSex" >
+							<option value="0">男</option>
+							<option value="1">女</option>
+						</select>	
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuClass">学生班级</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuClass" name="stuClass" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">添加学生</button>
+					</div>
+				</div>
+			</form>
+			<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>学号不能为空   添加失败</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '2'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>学号已存在   添加失败</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '3'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>添加失败</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>
+
 </body>
 </html>

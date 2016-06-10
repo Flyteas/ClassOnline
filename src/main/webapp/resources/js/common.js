@@ -9,7 +9,7 @@ function manageSessionSubmit()
 	}
 }
 
-function getSessionSubmit()
+function classSelectSubmit()
 {
 	if(!(document.getElementById("courseClassId").value == "" || document.getElementById("courseClassId").value == null))
 	{
@@ -41,6 +41,22 @@ function delSessionSubmit(delUrl)
 function delStuRegInfoSubmit(delUrl,stuName)
 {
 	if(confirm('确定重置学生 '+stuName+' 的注册信息?\n重置注册信息后学生可使用微信重新注册'))
+	{
+		location.href(delUrl);
+	}
+}
+
+function delClassStuSubmit(delUrl,stuName)
+{
+	if(confirm('确定从班级删除学生 '+stuName+' ?'))
+	{
+		location.href(delUrl);
+	}
+}
+
+function delClsSubmit(delUrl,clsId)
+{
+	if(confirm('确定删除教学班 '+clsId+' ?'))
 	{
 		location.href(delUrl);
 	}
@@ -132,6 +148,142 @@ function checkSessionForm() //检查AddSession表单
 			alert("题目详情不能为空!");
 			return false;
 		}
+	}
+	return true;
+}
+
+function checkPwdModify(form)
+{
+	if(form.oldPwd.value == "" || form.oldPwd.value == null)
+	{
+		alert("原密码不能为空");
+		return false;
+	}
+	if(form.newPwd.value == "" || form.newPwd.value == null)
+	{
+		alert("新密码不能为空");
+		return false;
+	}
+	if(form.newPwdConfirm.value == "" || form.newPwdConfirm.value == null)
+	{
+		alert("确认密码不能为空");
+		return false;
+	}
+	if(form.oldPwd.value == form.newPwd.value)
+	{
+		alert("新密码不能与原密码相同");
+		return false;
+	}
+	if(form.newPwd.value != form.newPwdConfirm.value)
+	{
+		alert("两次密码输入不一致");
+		return false;
+	}
+	return true;
+}
+
+function checkClassStuAdd(form)
+{
+	if(form.stuId.value == null || form.stuId.value == "")
+	{
+		alert("学生学号不能为空");
+		return false;
+	}
+	return true;
+}
+
+function checkTeacherAdd(form)
+{
+	if(form.techId.value == null || form.techId.value == "")
+	{
+		alert("教师ID不能为空");
+		return false;
+	}
+	if(form.techRealName.value == null || form.techRealName.value == "")
+	{
+		alert("真实姓名不能为空");
+		return false;
+	}
+	if(form.techPassword.value == null || form.techPassword.value == "")
+	{
+		alert("登陆密码不能为空");
+		return false;
+	}
+	return true;
+}
+
+function checkTeacherModify(form)
+{
+	if(form.techRealName.value == null || form.techRealName.value == "")
+	{
+		alert("真实姓名不能为空");
+		return false;
+	}
+	return true;
+}
+
+function modifyTeacherSubmit(modifyUrl)
+{
+	window.open(modifyUrl);
+}
+
+function delTeacherSubmit(delUrl,techName)
+{
+	if(confirm('确定删除教师 '+techName+' ?'))
+	{
+		location.href(delUrl);
+	}
+}
+
+function delStuSubmit(delUrl,stuName)
+{
+	if(confirm('确定删除学生 '+stuName+' ?'))
+	{
+		location.href(delUrl);
+	}
+}
+
+function checkStudentModify(form)
+{
+	if(form.stuName.value == null || form.stuName.value == "")
+	{
+		alert("学生姓名不能为空");
+		return false;
+	}
+	return true;
+}
+
+function checkClassAdd(form)
+{
+	if(form.clsId.value == null || form.clsId.value == "")
+	{
+		alert("教学班ID不能为空");
+		return false;
+	}
+	if(form.courseName.value == null || form.courseName.value == "")
+	{
+		alert("课程名称不能为空");
+		return false;
+	}
+	if(form.teacherId.value == null || form.teacherId.value == "")
+	{
+		alert("任课教师ID不能为空");
+		return false;
+	}
+	return true;
+}
+
+function checkClassModify(form)
+{
+	if(form.courseName.value == null || form.courseName.value == "")
+	{
+		alert("课程名称不能为空");
+		return false;
+	}
+	if(form.teacherId.value == null || form.teacherId.value == "")
+	{
+		alert("任课教师ID不能为空");
+		return false;
 	}
 	return true;
 }

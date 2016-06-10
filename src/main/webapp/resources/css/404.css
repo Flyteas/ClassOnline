@@ -1,0 +1,6 @@
+body {
+	background-color: rgb(218, 236, 238);
+}
+#error {
+	left: 50%; top: 50%; margin-top: -303px; margin-left: -303px; position: absolute;
+}

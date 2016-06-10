@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -7,6 +7,7 @@
    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
    <script src="resources/js/jquery-1.12.2.min.js"></script>
    <script src="resources/js/bootstrap.min.js"></script>
+   <script src="resources/js/common.js"></script>
 </head>
 <body>
 <div class="container">
@@ -50,7 +51,7 @@
 									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="PwdModify.do">修改密码</a>
+									 <a href="PwdMidify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>
@@ -69,53 +70,54 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.techRealName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							当前角色
-						</td>
-						<td>
-						<c:if test="${user.techRole == '0'}" >
-							管理员
-						</c:if>
-						<c:if test="${user.techRole == '1'}" >
-							教师
-						</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.techLastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="PwdModify.do" method="post" onsubmit="return checkPwdModify(this)">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputOldPwd">原密码</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="oldPwd" name="oldPwd" type="password" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputNewPwd">新密码</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="newPwd" name="newPwd" type="password" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputNewPwdConfirm">确认密码</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="newPwdConfirm" name="newPwdConfirm" type="password" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">修改密码</button>
+					</div>
+				</div>
+			</form>
+			<c:if test="${msg == '0'}">
+			<div class="alert alert-success" role="alert" id="modifyResultAlert">
+        		<strong>修改成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>原密码错误</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '2'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>新密码不能为空</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '3'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>账号不存在</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>
+
 </body>
 </html>

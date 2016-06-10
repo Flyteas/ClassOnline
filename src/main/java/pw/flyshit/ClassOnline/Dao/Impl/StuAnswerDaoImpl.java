@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -87,7 +88,14 @@ public class StuAnswerDaoImpl implements StuAnswerDao
 		{
 			return false;
 		}
-		ht.delete(deleteAns);
+		try
+		{
+			ht.delete(deleteAns);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return false;
 	}
 	
@@ -134,7 +142,14 @@ public class StuAnswerDaoImpl implements StuAnswerDao
 	@Override
 	public boolean addStuAnswer(StuAnswer stuAnswer) //添加回答
 	{
-		ht.save(stuAnswer);
+		try
+		{
+			ht.save(stuAnswer);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 }

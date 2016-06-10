@@ -17,6 +17,7 @@ import pw.flyshit.ClassOnline.Dao.StuAnswerDao;
 import pw.flyshit.ClassOnline.Dao.StuSignInDao;
 import pw.flyshit.ClassOnline.Dao.StudentDao;
 import pw.flyshit.ClassOnline.Dao.TeacherDao;
+import pw.flyshit.ClassOnline.Domain.Course;
 import pw.flyshit.ClassOnline.Domain.CourseClass;
 import pw.flyshit.ClassOnline.Domain.CourseClassMember;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
@@ -421,6 +422,168 @@ public class TeacherServiceImpl implements TeacherService
 	{
 		return lessonSessionDao.deleteSessionById(sessionId);
 	}
+
+	@Override
+	public boolean modifyInfo(Teacher teacher) //修改教师信息
+	{
+		if(teacherDao.modifyTeacher(teacher))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<Student> getCourseClassStus(String courseClassId) //通过ID获取教学班学生
+	{
+		List<CourseClassMember> membs;
+		List<Student> stus = new ArrayList<Student>();
+		CourseClass courseClass = courseClassDao.findCourseClassById(courseClassId);
+		if(courseClass == null) //教学班不存在
+		{
+			return null;
+		}
+		membs = courseClassMemberDao.findCourseClassMemberByCourseClass(courseClass);
+		for(int i=0;i<membs.size();i++)
+		{
+			stus.add(membs.get(i).getStu());
+		}
+		return stus;
+	}
+
+	@Override
+	public boolean delClassStu(String studentId,String courseClassId) 
+	{
+		Student stu;
+		CourseClass courClass;
+		stu = studentDao.findStudentById(studentId);
+		courClass = courseClassDao.findCourseClassById(courseClassId);
+		if(stu == null || courClass == null)
+		{
+			return false;
+		}
+		return courseClassMemberDao.delMembByStuAndCour(stu, courClass);
+	}
+
+	@Override
+	public Student getStuById(String stuId) 
+	{
+		return studentDao.findStudentById(stuId);
+	}
+
+	@Override
+	public boolean addClassStu(String stuId, String courseClassId) 
+	{
+		boolean isStuInClass = false;
+		Student stu = this.getStuById(stuId);
+		CourseClass courClass = this.getCourseClassById(courseClassId);
+		List<CourseClassMember> membs = courseClassMemberDao.findCourseClassMemberByCourseClass(courClass);
+		CourseClassMember  courseClassMember = new CourseClassMember();
+		for(int i=0;i<membs.size();i++)
+		{
+			if(membs.get(i).getStu().getStuId().equals(stu.getStuId()))
+			{
+				isStuInClass = true; //学生已在班级中
+			}
+		}
+		if(isStuInClass) //学生已在班级中
+		{
+			return false;
+		}
+		courseClassMember.setMemberId(String.valueOf(System.currentTimeMillis()));
+		courseClassMember.setCourseClass(courClass);
+		courseClassMember.setStu(stu);
+		if(courseClassMemberDao.addCourseClassMember(courseClassMember) == 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<Teacher> searchTeacher(String keyword) 
+	{
+		return teacherDao.searchTeacher(keyword);
+	}
+
+	@Override
+	public Teacher findTeacher(String techId) 
+	{
+		return teacherDao.findTeacherById(techId);
+	}
+
+	@Override
+	public boolean addTeacher(Teacher teacher) 
+	{
+		return teacherDao.addTeacher(teacher);
+	}
+
+	@Override
+	public boolean delTeacher(String techId) 
+	{
+		return teacherDao.deleteTeacherById(techId);
+	}
+
+	@Override
+	public boolean delStudent(String stuId) 
+	{
+		return studentDao.deleteStudentById(stuId);
+	}
+
+	@Override
+	public List<Student> searchStu(String keyword) 
+	{
+		return studentDao.searchStu(keyword);
+	}
+
+	@Override
+	public boolean addStudent(Student stu) 
+	{
+		return studentDao.addStudent(stu);
+	}
+
+	@Override
+	public boolean modifyStu(Student stu) 
+	{
+		return studentDao.modifyStu(stu);
+	}
+
+	@Override
+	public List<CourseClass> searchClass(String clsId) 
+	{
+		return courseClassDao.searchClass(clsId);
+	}
+
+	@Override
+	public boolean delClass(String clsId) 
+	{
+		return courseClassDao.deleteCourseClassById(clsId);
+	}
+
+	@Override
+	public boolean addCourse(Course course) 
+	{
+		return courseDao.addCourse(course);
+	}
+
+	@Override
+	public boolean addCourseClass(CourseClass cls) 
+	{
+		return courseClassDao.addCourseClass(cls);
+	}
+
+	@Override
+	public boolean delCourse(String courseId) 
+	{
+		return courseDao.deleteCourseById(courseId);
+	}
+
+	@Override
+	public boolean modifyCourseClass(CourseClass modifyCls) 
+	{
+		return courseClassDao.modifyCls(modifyCls);
+	}
+
 
 
 }

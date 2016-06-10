@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -77,7 +78,14 @@ public class QuestionDaoImpl implements QuestionDao
 		{
 			return false;
 		}
-		ht.delete(delQues);
+		try
+		{
+			ht.delete(delQues);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -85,7 +93,14 @@ public class QuestionDaoImpl implements QuestionDao
 	@Override
 	public boolean addQuestion(Question question) //添加问题
 	{
-		ht.save(question);
+		try
+		{
+			ht.save(question);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 }

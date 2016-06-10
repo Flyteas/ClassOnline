@@ -1,4 +1,5 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,28 +24,38 @@
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li>
+						<c:if test="${user.techRole == '1'}" >
+						<li class="active">
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">学生管理</a>
+							 <a href="ClassManage.do">班级管理</a>
+						</li>
+						</c:if>
+						<c:if test="${user.techRole == '0'}" >
+						<li class="active">
+							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">班级管理</a>
+							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
-							 <a href="#">教师管理</a>
+							 <a href="StudentManage.do">学生管理</a>
 						</li>
+						<li>
+							 <a href="TeacherManage.do">教师管理</a>
+						</li>
+						</c:if>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
 								<li>
-									 <a href="#">个人资料</a>
+									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="#">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>

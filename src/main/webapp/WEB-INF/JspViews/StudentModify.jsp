@@ -1,0 +1,134 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html>
+<head>
+   <title>课堂应答系统</title>
+   <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+   <script src="resources/js/jquery-1.12.2.min.js"></script>
+   <script src="resources/js/bootstrap.min.js"></script>
+   <script src="resources/js/common.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+				<div class="navbar-header">
+					 <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">管理<span class="sr-only"></span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="index.jsp">主页</a>
+				</div>
+				
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<c:if test="${user.techRole == '1'}" >
+						<li>
+							 <a href="SessionManage.do">会话管理</a>
+						</li>
+						<li class="active">
+							 <a href="ClassManage.do">班级管理</a>
+						</li>
+						</c:if>
+						<c:if test="${user.techRole == '0'}" >
+						<li>
+							 <a href="SessionManageAdmin.do">会话管理</a>
+						</li>
+						<li>
+							 <a href="ClassManageAdmin.do">班级管理</a>
+						</li>
+						<li class="active">
+							 <a href="StudentManage.do">学生管理</a>
+						</li>
+						<li>
+							 <a href="TeacherManage.do">教师管理</a>
+						</li>
+						</c:if>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
+							<ul class="dropdown-menu">
+								<li>
+									 <a href="UserInfo.do">个人资料</a>
+								</li>
+								<li>
+									 <a href="PwdModify.do">修改密码</a>
+								</li>
+								<li class="divider">
+								</li>
+								<li>
+									 <a href="Logout.do">注销</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<br><br><br><br>
+	<div class="row clearfix">
+		<div class="col-md-3 column">
+		</div>
+		<div class="col-md-6 column">
+			<form class="form-horizontal" role="form" action="StudentModify.do" onsubmit="return checkStudentModify(this)" method="post">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="displayStuId">学生学号</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuId" type="text" value="${modifyStu.stuId}" disabled />
+						<input class="hidden" id="stuId" name="stuId" type="text" value="${modifyStu.stuId}"/>
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuName">学生姓名</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuName" name="stuName" type="text" value="${modifyStu.stuName}" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuSex">学生性别</label>
+					<div class="col-sm-7">
+						<select class="form-control" id="stuSex" name="stuSex" >
+							<option value="0" <c:if test="${modifyStu.stuSex == '0'}"> selected="selected" </c:if>>男</option>
+							<option value="1" <c:if test="${modifyStu.stuSex == '1'}"> selected="selected" </c:if>>女</option>
+						</select>	
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuClass">学生班级</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuClass" name="stuClass" type="text" value="${modifyStu.stuClass}" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuWechatOpenId">OpenId</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuWechatOpenId" name="stuWechatOpenId" type="text" value="${modifyStu.stuWechatOpenId}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">修改信息</button>
+					</div>
+				</div>
+			</form>
+    		<c:if test="${msg == '0'}">
+			<div class="alert alert-success" role="alert" id="modifyResultAlert">
+        		<strong>修改成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>修改失败</strong>
+    		</div>
+			</c:if>
+    		<c:if test="${msg == '4'}">
+			<div class="alert alert-success" role="alert" id="addResultAlert">
+        		<strong>添加成功</strong>
+    		</div>
+    		</c:if>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

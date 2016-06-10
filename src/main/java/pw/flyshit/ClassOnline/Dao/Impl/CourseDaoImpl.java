@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -45,7 +46,14 @@ public class CourseDaoImpl implements CourseDao
 		{
 			return false;
 		}
-		ht.delete(delCourse);
+		try
+		{
+			ht.delete(delCourse);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	

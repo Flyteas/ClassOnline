@@ -11,16 +11,6 @@
    <script src="resources/js/common.js"></script>
 </head>
 <body>
-<!--<script type="text/javascript">
-function getSession()
-{
-	if(!(document.getElementById("courseClassId").value == "" || document.getElementById("courseClassId").value == null))
-	{
-		document.getElementById("courseClassForm").submit();		
-	}
-}
-</script>-->
-
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -31,28 +21,38 @@ function getSession()
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active">
+						<c:if test="${user.techRole == '1'}" >
+						<li>
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
+						<li class="active">
+							 <a href="ClassManage.do">班级管理</a>
+						</li>
+						</c:if>
+						<c:if test="${user.techRole == '0'}" >
 						<li>
-							 <a href="#">学生管理</a>
+							 <a href="SessionManageAdmin.do">会话管理</a>
+						</li>
+						<li class="active">
+							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
-							 <a href="#">班级管理</a>
+							 <a href="StudentManage.do">学生管理</a>
 						</li>
 						<li>
-							 <a href="#">教师管理</a>
+							 <a href="TeacherManage.do">教师管理</a>
 						</li>
+						</c:if>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
 								<li>
-									 <a href="#">个人资料</a>
+									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="#">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>
@@ -71,7 +71,7 @@ function getSession()
 		<div class="col-md-4 column">
 		</div>
 		<div class="col-md-4 column">
-			<form role="form" id="courseClassForm" action="SessionList.do" method="get">
+			<form role="form" id="courseClassForm" action="ClassStuList.do" method="get">
 				<div class="form-group">
       				<label for="name">教学班</label>
       				<select class="form-control" id="courseClassId" name="courseClassId">
@@ -81,9 +81,11 @@ function getSession()
       				</select>
       			</div>
       		</form>
-      		<div class="alert alert-danger <c:if test="${fn:length(courseClasses) != 0}">hidden</c:if>" role="alert" id="loginErrorAlert">
+      		<c:if test="${fn:length(courseClasses) == 0}">
+      		<div class="alert alert-danger" role="alert" id="noClassAlert">
         		<strong>无教学班!</strong>
     		</div>
+    		</c:if>
 		</div>
 		<div class="col-md-4 column">
 		</div>
@@ -92,7 +94,7 @@ function getSession()
 		<div class="col-md-5 column">
 		</div>
 		<div class="col-md-2 column">
-    		 <button type="button" class="btn btn-success btn-lg" onclick="getSessionSubmit()"><strong>&nbsp;&nbsp;选择教学班&nbsp;&nbsp;</strong></button>
+    		 <button type="button" class="btn btn-success btn-lg" onclick="classSelectSubmit()"><strong>&nbsp;&nbsp;选择教学班&nbsp;&nbsp;</strong></button>
 		</div>
 		<div class="col-md-5 column">
 		</div>

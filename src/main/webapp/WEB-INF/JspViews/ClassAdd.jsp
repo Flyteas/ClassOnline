@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -7,6 +7,7 @@
    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
    <script src="resources/js/jquery-1.12.2.min.js"></script>
    <script src="resources/js/bootstrap.min.js"></script>
+   <script src="resources/js/common.js"></script>
 </head>
 <body>
 <div class="container">
@@ -23,7 +24,7 @@
 						<li>
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManage.do">班级管理</a>
 						</li>
 						</c:if>
@@ -31,7 +32,7 @@
 						<li>
 							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
@@ -69,53 +70,49 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.techRealName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							当前角色
-						</td>
-						<td>
-						<c:if test="${user.techRole == '0'}" >
-							管理员
-						</c:if>
-						<c:if test="${user.techRole == '1'}" >
-							教师
-						</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.techLastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="ClassAdd.do" onsubmit="return checkClassAdd(this)" method="post">
+				<div class="form-group">
+					 <label class="col-sm-3 control-label" for="inputClsId">教学班ID</label>
+					<div class="col-sm-6">
+						<input class="form-control" id="clsId" name="clsId" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-3 control-label" for="inputCourseName">课程名称</label>
+					<div class="col-sm-6">
+						<input class="form-control" id="courseName" name="courseName" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-3 control-label" for="inputTeacherId">任课教师ID</label>
+					<div class="col-sm-6">
+						<input class="form-control" id="teacherId" name="teacherId" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">添加教学班</button>
+					</div>
+				</div>
+			</form>
+			<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>添加失败</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '2'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>教学班ID已存在   添加失败</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '3'}">
+			<div class="alert alert-danger" role="alert" id="addResultAlert">
+        		<strong>任课教师不存在   添加失败</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>
+
 </body>
 </html>

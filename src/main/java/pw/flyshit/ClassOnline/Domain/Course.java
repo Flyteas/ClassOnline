@@ -12,7 +12,7 @@ public class Course
 {
 	@Id
 	@Column(length = 16)
-	private String courseId; //课程班级ID
+	private String courseId; //课程ID
 	@Column(length = 32)
 	private String courseName; //课程名称
 	
@@ -26,7 +26,7 @@ public class Course
 	{
 		this.courseId = courseId;
 	}
-	public String getCourseClassId()
+	public String getCourseId()
 	{
 		return this.courseId;
 	}

@@ -15,4 +15,6 @@ public interface CourseClassDao
 	public int deleteCourseClassByTeacher(Teacher teacher); //通过教师删除，即删除某教师所有上课班，返回删除的数目
 	public int deleteCourseClassByCourseAndTeacher(Course course,Teacher teacher); //通过课程和教师删除，即删除某教师某课程的所有上课班，返回删除的数目
 	public boolean addCourseClass(CourseClass courseClass); //添加上课班
+	public List<CourseClass> searchClass(String clsId); //根据ID搜索班级
+	public boolean modifyCls(CourseClass modifyCls); //修改班级
 }

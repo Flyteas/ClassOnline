@@ -20,28 +20,38 @@
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li>
+						<c:if test="${user.techRole == '1'}" >
+						<li class="active">
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">学生管理</a>
+							 <a href="ClassManage.do">班级管理</a>
+						</li>
+						</c:if>
+						<c:if test="${user.techRole == '0'}" >
+						<li class="active">
+							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">班级管理</a>
+							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
-							 <a href="#">教师管理</a>
+							 <a href="StudentManage.do">学生管理</a>
 						</li>
+						<li>
+							 <a href="TeacherManage.do">教师管理</a>
+						</li>
+						</c:if>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
 								<li>
-									 <a href="#">个人资料</a>
+									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="#">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>
@@ -165,16 +175,17 @@
 							<c:out value="${regStu.stuName}"/>
 						</td>
 						<td>
-							<c:out value="${regStu.stuSex}"/>
+							<c:if test="${regStu.stuSex == 0}">男</c:if>
+							<c:if test="${regStu.stuSex == 1}">女</c:if>
 						</td>
 						<td>
-							<c:out value="${unregStu.stuClass}"/>
+							<c:out value="${regStu.stuClass}"/>
 						</td>
 						<td>
 							<c:out value="${regStu.stuWechatOpenId}"/>
 						</td>
 						<td>
-							<button type="button" class="btn btn-success btn" onclick="delStuRegInfoSubmit('RegInfoDelete.do?studentId=${regStu.stuId}&sessionId=${lessonSession.lessonSessionId}','${regStu.stuName}')">重置注册</button>
+							<button type="button" class="btn btn-success btn-xs" onclick="delStuRegInfoSubmit('RegInfoDelete.do?studentId=${regStu.stuId}&sessionId=${lessonSession.lessonSessionId}','${regStu.stuName}')">重置注册</button>
 						</td>
 					</tr>
 					</c:forEach>	
@@ -209,7 +220,8 @@
 							<c:out value="${unregStu.stuName}"/>
 						</td>
 						<td>
-							<c:out value="${unregStu.stuSex}"/>
+							<c:if test="${unregStu.stuSex == 0}">男</c:if>
+							<c:if test="${unregStu.stuSex == 1}">女</c:if>
 						</td>
 						<td>
 							<c:out value="${unregStu.stuClass}"/>

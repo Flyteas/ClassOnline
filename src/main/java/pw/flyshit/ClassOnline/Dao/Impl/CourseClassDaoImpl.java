@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -63,7 +64,14 @@ public class CourseClassDaoImpl implements CourseClassDao
 		{
 			return false;
 		}
-		ht.delete(delCourClass);
+		try
+		{
+			ht.delete(delCourClass);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -110,7 +118,45 @@ public class CourseClassDaoImpl implements CourseClassDao
 	@Override
 	public boolean addCourseClass(CourseClass courseClass) //添加上课班
 	{
-		ht.save(courseClass);
+		try
+		{
+			ht.save(courseClass);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CourseClass> searchClass(String clsId) 
+	{
+		String hql;
+		if(clsId == null || clsId.isEmpty())
+		{
+			hql = "from CourseClass";
+			return (List<CourseClass>) ht.find(hql);
+		}
+		else
+		{
+			hql = "from CourseClass where courseClassId like ?";
+			return (List<CourseClass>) ht.find(hql, "%"+clsId+"%");
+		}
+	}
+
+	@Override
+	public boolean modifyCls(CourseClass modifyCls) 
+	{
+		try
+		{
+			ht.update(modifyCls);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 }

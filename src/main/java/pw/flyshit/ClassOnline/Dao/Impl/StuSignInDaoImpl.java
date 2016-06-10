@@ -3,6 +3,7 @@ package pw.flyshit.ClassOnline.Dao.Impl;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -55,7 +56,14 @@ public class StuSignInDaoImpl implements StuSignInDao
 		{
 			return false;
 		}
-		ht.delete(deleteStuSignIn);
+		try
+		{
+			ht.delete(deleteStuSignIn);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -89,7 +97,14 @@ public class StuSignInDaoImpl implements StuSignInDao
 	@Override
 	public boolean addStuSignIn(StuSignIn stuSignIn) //添加签到记录
 	{
-		ht.save(stuSignIn);
+		try
+		{
+			ht.save(stuSignIn);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 }

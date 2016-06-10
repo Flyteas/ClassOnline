@@ -1,5 +1,6 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,8 +8,10 @@
    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
    <script src="resources/js/jquery-1.12.2.min.js"></script>
    <script src="resources/js/bootstrap.min.js"></script>
+   <script src="resources/js/common.js"></script>
 </head>
 <body>
+
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
@@ -23,18 +26,18 @@
 						<li>
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="ClassManage.do">班级管理</a>
 						</li>
 						</c:if>
 						<c:if test="${user.techRole == '0'}" >
-						<li>
+						<li class="active">
 							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
 						<li>
 							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
-						<li>
+						<li class="active">
 							 <a href="StudentManage.do">学生管理</a>
 						</li>
 						<li>
@@ -69,51 +72,39 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.techRealName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							当前角色
-						</td>
-						<td>
-						<c:if test="${user.techRole == '0'}" >
-							管理员
-						</c:if>
-						<c:if test="${user.techRole == '1'}" >
-							教师
-						</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.techLastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="StuBatchAdd.do" method="post" onsubmit="return checkStusBatchAdd(this)">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputStuXls">学生名单</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="stuXls" type="file" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">添加学生</button>
+					</div>
+				</div>
+			</form>
+			<c:if test="${errMsg == '0'}">
+      		<div class="alert alert-success col-sm-10" role="alert" id="noStuAlert">
+        		<strong>添加成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${errMsg == '1'}">
+      		<div class="alert alert-danger col-sm-10" role="alert" id="noStuAlert">
+        		<strong>学生已在班级中</strong>
+    		</div>
+    		</c:if>
+			<c:if test="${errMsg == '2'}">
+      		<div class="alert alert-danger col-sm-10" role="alert" id="noStuAlert">
+        		<strong>无此学生</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${errMsg == '3'}">
+      		<div class="alert alert-danger col-sm-10" role="alert" id="noStuAlert">
+        		<strong>无此课程</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>

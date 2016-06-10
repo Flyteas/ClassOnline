@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -46,7 +47,14 @@ public class LessonDaoImpl implements LessonDao
 		{
 			return false;
 		}
-		ht.delete(delLesson);
+		try
+		{
+			ht.delete(delLesson);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -67,7 +75,14 @@ public class LessonDaoImpl implements LessonDao
 	@Override
 	public boolean addLesson(Lesson lesson) //添加课堂
 	{
-		ht.save(lesson);
+		try
+		{
+			ht.save(lesson);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	

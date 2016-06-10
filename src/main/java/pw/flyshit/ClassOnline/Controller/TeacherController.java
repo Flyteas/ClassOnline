@@ -1,6 +1,6 @@
 package pw.flyshit.ClassOnline.Controller;
 
-/* 教师端控制器 */
+import pw.flyshit.ClassOnline.Domain.Course;
 import pw.flyshit.ClassOnline.Domain.CourseClass;
 import pw.flyshit.ClassOnline.Domain.LessonSession;
 import pw.flyshit.ClassOnline.Domain.Question;
@@ -12,7 +12,9 @@ import pw.flyshit.ClassOnline.Service.TeacherService;
 import pw.flyshit.ClassOnline.Util.DateTimeConverter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,9 +73,19 @@ public class TeacherController
 		return mv;
 	}
 	
+	@RequestMapping(value = { "/404" }, method = RequestMethod.GET) //404
+	public ModelAndView redirect404(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		request.setCharacterEncoding("UTF-8");
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("404");
+		return mv;
+	}
+	
 	@RequestMapping(value = { "/Login.do" }, method = RequestMethod.POST) //用户登陆
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
+		request.setCharacterEncoding("UTF-8");
 		Teacher user;
 		String techId;
 		String techPassword;
@@ -105,6 +117,7 @@ public class TeacherController
 	@RequestMapping(value = { "/Logout.do" }, method = RequestMethod.GET) //用户注销
 	public void logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
+		request.setCharacterEncoding("UTF-8");
 		session.removeAttribute("user");
 		response.sendRedirect("index.jsp");
 	}
@@ -112,6 +125,7 @@ public class TeacherController
 	@RequestMapping(value = { "/SessionAdd.do" }, method = RequestMethod.GET) //添加一个会话
 	public ModelAndView addSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
+		request.setCharacterEncoding("UTF-8");
 		String courseClassId;
 		ModelAndView mv = new ModelAndView();
 		courseClassId = request.getParameter("courseClassId");
@@ -123,6 +137,8 @@ public class TeacherController
 	@RequestMapping(value = { "/SessionStart.do" }, method = RequestMethod.POST) //开启一个会话
 	public ModelAndView startSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
 	{
+		request.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		String courseClassId;
 		String sessionName;
 		int sessionType; //会话模式,0为注册，1为签到，2为答题
@@ -137,11 +153,10 @@ public class TeacherController
 		mv = new ModelAndView();
 		if(!loginCheck(session)) //没有登陆
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		errMsgs = new ArrayList<String>();
-		
 		courseClassId = request.getParameter("courseClassId");
 		sessionName = request.getParameter("sessionName");
 		sessionType = Integer.valueOf(request.getParameter("sessionType"));
@@ -265,25 +280,20 @@ public class TeacherController
 	@RequestMapping(value = { "/SessionStop.do" }, method = RequestMethod.GET)
 	public ModelAndView stopSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //停止一个会话
 	{
+		request.setCharacterEncoding("UTF-8");
 		String sessionId;
 		LessonSession lessonSession = null;
-		//String msg;
 		ModelAndView mv;
 		mv = new ModelAndView();
 		if(!loginCheck(session)) //登陆状态检查
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		sessionId = request.getParameter("sessionId");
 		if(teacherService.stopSession(sessionId))
 		{
-			//msg = "停止会话成功!";
 			lessonSession = teacherService.getSession(sessionId);
-		}
-		else
-		{
-			//msg = "会话不存在!";
 		}
 		if(lessonSession != null)
 		{
@@ -298,6 +308,7 @@ public class TeacherController
 	@RequestMapping(value = { "/SessionDel.do" }, method = RequestMethod.GET)
 	public ModelAndView delSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除一个会话
 	{
+		request.setCharacterEncoding("UTF-8");
 		String sessionId;
 		String courseClassId;
 		LessonSession lessonSession;
@@ -316,165 +327,94 @@ public class TeacherController
 		}
 		return mv;
 	}
-	/*
-	@RequestMapping(value = { "/RegStateList.do" }, method = RequestMethod.GET)
-	public ModelAndView listRegState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生注册状态
-	{
-		String courseClassId;
-		List<Student> regStus; //已注册学生
-		List<Student> unregStus; //未注册学生
-		String errMsg;
-		ModelAndView mv;
-		mv = new ModelAndView();
-		if(!loginCheck(session)) //登陆状态检查
-		{
-			response.sendRedirect("index.jsp");
-			return mv;
-		}
-		courseClassId = request.getParameter("courseClassId");
-		regStus = teacherService.getRegStusByCourseClass(courseClassId);
-		unregStus = teacherService.getUnregStusByCourseClass(courseClassId);
-		if(regStus == null || unregStus == null)
-		{
-			errMsg = "教学班不存在!";
-			mv.addObject("errMsg",errMsg);
-			mv.setViewName("SessionManage");
-		}
-		else
-		{
-			request.setAttribute("regStus", regStus);
-			request.setAttribute("unregStus", unregStus);
-			mv.addObject("regStus",regStus);
-			mv.addObject("unregStus",unregStus);
-			mv.setViewName("RegStateList");
-		}
-		return mv;
-	}*/
 	
 	@RequestMapping(value = { "/RegInfoDelete.do" }, method = RequestMethod.GET)
 	public ModelAndView deleteRegInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除学生注册信息
 	{
+		request.setCharacterEncoding("UTF-8");
 		String studentId;
 		String sessionId;
-		//String msg;
+		String courseClassId;
 		ModelAndView mv;
 		mv = new ModelAndView();
 		if(!loginCheck(session)) //登录状态检查
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		studentId = request.getParameter("studentId");
 		sessionId = request.getParameter("sessionId");
-		if(!teacherService.deleteStuRegInfo(studentId)) //学生不存在
+		courseClassId = request.getParameter("courseClassId");
+		teacherService.deleteStuRegInfo(studentId); //学生不存在
+		if(sessionId != null && !sessionId.isEmpty())
 		{
-			//msg = "此学生不存在!";
+			mv.setViewName("redirect:SessionState.do?sessionId="+sessionId);
+		}
+		else if(courseClassId != null && !courseClassId.isEmpty())
+		{
+			mv.setViewName("redirect:ClassStuList.do?courseClassId="+courseClassId);
 		}
 		else
 		{
-			//msg = "清空学生" + studentId + "注册信息成功!";
-		}
-		//mv.addObject("msg",msg);
-		mv.setViewName("redirect:SessionState.do?sessionId="+sessionId);
-		return mv;
-	}
-	/*
-	@RequestMapping(value = { "/SignInStateList.do" }, method = RequestMethod.GET)
-	public ModelAndView listSignInState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生签到状态
-	{
-		String sessionId;
-		List<StuSignIn> signInRecord; //已签到记录
-		List<Student> unsignInStus; //未签到学生
-		String errMsg;
-		ModelAndView mv;
-		mv = new ModelAndView();
-		if(!loginCheck(session))
-		{
-			response.sendRedirect("index.jsp");
-			return mv;
-		}
-		sessionId = request.getParameter("sessionId");
-		signInRecord = teacherService.getSignInStudent(sessionId);
-		unsignInStus = teacherService.getUnsignInStudent(sessionId);
-		if(signInRecord == null || unsignInStus == null)
-		{
-			errMsg = "会话不存在或非签到会话!";
-			mv.addObject("errMsg", errMsg);
-			mv.setViewName("SessionManage");
-		}
-		else
-		{
-			mv.addObject("signInRecord", signInRecord);
-			mv.addObject("unsignInStus", unsignInStus);
-			mv.setViewName("SignInStateList");
+			mv.setViewName("redirect:404");
 		}
 		return mv;
 	}
 	
-	@RequestMapping(value = { "/AnswerStateList.do" }, method = RequestMethod.GET)
-	public ModelAndView listAnswerState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //查看学生答题状态
+	@RequestMapping(value = { "/ClassStuDelete.do" }, method = RequestMethod.GET)
+	public ModelAndView delClassStu(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //从教学班删除学生
 	{
-		String sessionId;
-		List<StuAnswer> stuAnswers;
-		Question question;
-		String errMsg;
+		request.setCharacterEncoding("UTF-8");
+		String studentId;
+		String courseClassId;
 		ModelAndView mv;
 		mv = new ModelAndView();
-		if(!loginCheck(session))
+		if(!loginCheck(session)) //登录状态检查
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
-		sessionId = request.getParameter("sessionId");
-		stuAnswers = teacherService.getStuAnswerBySessionId(sessionId);
-		if(stuAnswers == null)
+		studentId = request.getParameter("studentId");
+		courseClassId = request.getParameter("courseClassId");
+		if(studentId == null || studentId.isEmpty() || courseClassId == null || courseClassId.isEmpty())
 		{
-			errMsg = "会话不存在或非答题会话!";
-			mv.addObject("errMsg", errMsg);
-			mv.setViewName("SessionManage");
+			mv.setViewName("404");
 			return mv;
 		}
-		question = teacherService.getQuestionBySessionId(sessionId);
-		if(question == null)
-		{
-			errMsg = "问题不存在!";
-			mv.addObject("errMsg", errMsg);
-			mv.setViewName("SessionManage");
-			return mv;
-		}
-		mv.addObject("stuAnswers", stuAnswers);
-		mv.addObject("question", question);
-		mv.setViewName("AnwserStateList");
+		teacherService.delClassStu(studentId, courseClassId);
+		mv.setViewName("redirect:ClassStuList.do?courseClassId="+courseClassId);
 		return mv;
-	}*/
+	}
 	
 	@RequestMapping(value = { "/SessionManage.do" }, method = RequestMethod.GET)
 	public ModelAndView listClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //列出当前教师的教学班
 	{
+		request.setCharacterEncoding("UTF-8");
 		Teacher teacher;
 		List<CourseClass> courseClasses;
 		ModelAndView mv;
 		mv = new ModelAndView();
 		if(!loginCheck(session))
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		teacher = (Teacher)session.getAttribute("user");
 		courseClasses = teacherService.getCourseClassByTech(teacher.getTechId());
 		if(courseClasses == null) //教师不存在
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		mv.addObject("courseClasses", courseClasses);
-		mv.setViewName("ListClass");
+		mv.setViewName("ManageSessionSelect");
 		return mv;
 	}
 	
 	@RequestMapping(value = { "/SessionList.do" }, method = RequestMethod.GET)
 	public ModelAndView listSession(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //获取当前教学班正在进行的会话
 	{
+		request.setCharacterEncoding("UTF-8");
 		String courseClassId;
 		List<LessonSession> lessonSessions;
 		LessonSession currentSession;
@@ -484,7 +424,7 @@ public class TeacherController
 		mv = new ModelAndView();
 		if(!loginCheck(session))
 		{
-			response.sendRedirect("index.jsp");
+			mv.setViewName("redirect:index.jsp");
 			return mv;
 		}
 		courseClassId = request.getParameter("courseClassId");
@@ -510,6 +450,7 @@ public class TeacherController
 	@RequestMapping(value = { "/SessionState.do" }, method = RequestMethod.GET)
 	public ModelAndView getSessionState(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //获取会话状态
 	{
+		request.setCharacterEncoding("UTF-8");
 		String sessionId;
 		String courseClassId;
 		LessonSession lessonSession;
@@ -518,11 +459,16 @@ public class TeacherController
 		int sessionState; //会话状态，0为正在进行，1为已结束，2为未开始
 		ModelAndView mv;
 		mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
 		sessionId = request.getParameter("sessionId");
 		lessonSession = teacherService.getSession(sessionId);
 		if(lessonSession == null)
 		{
-			response.sendRedirect("SessionManage.do");
+			mv.setViewName("redirect:SessionManage.do");
 			return mv;
 		}
 		if(lessonSession.getBeginTime() <= System.currentTimeMillis() && lessonSession.getEndTime() >= System.currentTimeMillis()) //正在进行
@@ -595,6 +541,7 @@ public class TeacherController
 			List<StuAnswer> stuAnswers;
 			List<Student> noAnsStus;
 			float involveRates; //答题率
+			Map<String,String> ansCountMap = new LinkedHashMap<String,String>();
 			question = lessonSession.getQuestion();
 			stuAnswers = teacherService.getStuAnswerByQuestionId(question.getQuestionId());
 			noAnsStus = teacherService.getNoAnsStusBySessionId(sessionId);
@@ -611,18 +558,1398 @@ public class TeacherController
 				}
 				correctRates = (float)correctCount/stuAnswers.size() * 100;
 				mv.addObject("correctRates",(int)correctRates);
+				if(question.getQuestionType() == 0) //单选
+				{
+					int optionACount = 0; //A选项计数
+					int optionBCount = 0; //B选项计数
+					int optionCCount = 0; //C选项计数
+					int optionDCount = 0; //D选项计数
+					int optionECount = 0; //E选项计数
+					int optionFCount = 0; //F选项计数
+					for(int i=0;i<stuAnswers.size();i++)
+					{
+						String stuAns = stuAnswers.get(i).getAnswer();
+						stuAns = stuAns.replace('1', 'A');
+						stuAns = stuAns.replace('2', 'B');
+						stuAns = stuAns.replace('3', 'C');
+						stuAns = stuAns.replace('4', 'D');
+						stuAns = stuAns.replace('5', 'E');
+						stuAns = stuAns.replace('6', 'F');
+						stuAns = stuAns.toUpperCase();
+						if(stuAns.equals("A"))
+						{
+							optionACount++;
+						}
+						else if(stuAns.equals("B"))
+						{
+							optionBCount++;
+						}
+						else if(stuAns.equals("C"))
+						{
+							optionCCount++;
+						}
+						else if(stuAns.equals("D"))
+						{
+							optionDCount++;
+						}
+						else if(stuAns.equals("E"))
+						{
+							optionECount++;
+						}
+						else if(stuAns.equals("F"))
+						{
+							optionFCount++;
+						}
+					}
+					ansCountMap.put("A", String.valueOf(optionACount));
+					ansCountMap.put("B", String.valueOf(optionBCount));
+					ansCountMap.put("C", String.valueOf(optionCCount));
+					ansCountMap.put("D", String.valueOf(optionDCount));
+					ansCountMap.put("E", String.valueOf(optionECount));
+					ansCountMap.put("F", String.valueOf(optionFCount));
+				}
 			}
 			involveRates = (float)stuAnswers.size()/(stuAnswers.size()+noAnsStus.size()) * 100;
 			mv.addObject("involveRates",(int)involveRates);
 			mv.addObject("noAnsStus",noAnsStus);
 			mv.addObject("stuAnswers",stuAnswers);
+			mv.addObject("ansCountMap",ansCountMap);
 			mv.setViewName("AnswerState");
 		}
 		else
 		{
-			response.sendRedirect("SessionManage.do");
+			mv.setViewName("redirect:SessionManage.do");
 			return mv;
 		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/UserInfo.do" }, method = RequestMethod.POST)
+	public ModelAndView ModifyUserInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //修改用户信息
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String msg;
+		String techPhoneNum;
+		ModelAndView mv;
+		mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(request.getParameter("techPhoneNum") != null)
+		{
+			techPhoneNum = (String)request.getParameter("techPhoneNum");
+			user.setTechPhoneNum(techPhoneNum);
+			if(teacherService.modifyInfo(user)) 
+			{
+				msg = "0"; //修改成功
+				session.setAttribute("user", user);
+			}
+			else
+			{
+				msg = "1"; //修改失败
+			}
+			mv.addObject("msg",msg);
+		}
+		mv.setViewName("UserInfo");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/UserInfo.do" }, method = RequestMethod.GET)
+	public ModelAndView getUserInfo(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //显示用户信息
+	{
+		request.setCharacterEncoding("UTF-8");
+		ModelAndView mv;
+		mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		mv.setViewName("UserInfo");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/PwdModify.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectUserPwd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //修改密码页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		ModelAndView mv;
+		mv = new ModelAndView();
+		mv.setViewName("PwdModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/PwdModify.do" }, method = RequestMethod.POST)
+	public ModelAndView modifyUserPwd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //修改密码页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String oldPwd;
+		String newPwd;
+		String msg;
+		ModelAndView mv;
+		mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(request.getParameter("oldPwd") != null)
+		{
+			oldPwd = (String)request.getParameter("oldPwd");
+		}
+		else
+		{
+			msg = "1"; //原密码为空，也就是密码错误
+			mv.addObject("msg",msg);
+			mv.setViewName("PwdModify");
+			return mv;
+		}
+		if(request.getParameter("newPwd") != null)
+		{
+			newPwd = (String)request.getParameter("newPwd"); //新密码为空
+		}
+		else
+		{
+			msg = "2";
+			mv.addObject("msg",msg);
+			mv.setViewName("PwdModify");
+			return mv;
+		}
+		if(user.getTechPassword().equals(oldPwd)) //原密码正确
+		{
+			user.setTechPassword(newPwd);
+			if(teacherService.modifyInfo(user)) //修改成功
+			{
+				msg = "0"; //修改成功
+				session.setAttribute("user", user);
+			}
+			else //教师不存在
+			{
+				msg = "3"; //账号不存在
+			}
+		}
+		else //原密码错误
+		{
+			msg = "1";
+		}
+		mv.addObject("msg",msg);
+		mv.setViewName("PwdModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassManage.do" }, method = RequestMethod.GET)
+	public ModelAndView manageClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理教学班
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher teacher;
+		List<CourseClass> courseClasses;
+		ModelAndView mv;
+		mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		teacher = (Teacher)session.getAttribute("user");
+		if(teacher.getTechRole() == 0) //管理员权限
+		{
+			mv.setViewName("redirect:404");
+		}
+		else if(teacher.getTechRole() == 1) //教师权限
+		{
+			courseClasses = teacherService.getCourseClassByTech(teacher.getTechId());
+			if(courseClasses == null) //教师不存在
+			{
+				mv.setViewName("redirect:index.jsp");
+				return mv;
+			}
+			mv.addObject("courseClasses", courseClasses);
+			mv.setViewName("ManageClassSelect");
+		}
+		else
+		{
+			mv.setViewName("redirect:index.jsp");
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassStuList.do" }, method = RequestMethod.GET)
+	public ModelAndView listClassStu(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //列出教学班学生
+	{
+		request.setCharacterEncoding("UTF-8");
+		String courseClassId;
+		CourseClass courseClass;
+		List<Student> stus;
+		String errMsg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		errMsg = request.getParameter("errMsg");
+		courseClassId = request.getParameter("courseClassId");
+		courseClass = teacherService.getCourseClassById(courseClassId);
+		if(courseClass == null) //教学班不存在
+		{
+			mv.setViewName("redirect:ClassManage.do");
+			return mv;
+		}
+		stus = teacherService.getCourseClassStus(courseClassId);
+		if(stus == null) //教学班不存在
+		{
+			mv.setViewName("redirect:ClassManage.do");
+			return mv;
+		}
+		mv.addObject("errMsg",errMsg);
+		mv.addObject("stus",stus);
+		mv.addObject("courseClass",courseClass);
+		mv.setViewName("ManageClass");
+		return mv;
+	}
+	@RequestMapping(value = { "/ClassStuAdd.do" }, method = RequestMethod.POST)
+	public ModelAndView addClassStu(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //添加教学班学生
+	{
+		request.setCharacterEncoding("UTF-8");
+		String stuId;
+		String courClassId;
+		CourseClass courseClass;
+		Student stu;
+		String errMsg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		courClassId = request.getParameter("courseClassId");
+		stuId= request.getParameter("stuId");
+		courseClass = teacherService.getCourseClassById(courClassId);
+		stu = teacherService.getStuById(stuId);
+		if(courseClass == null)
+		{
+			errMsg = "3"; //无此课程
+			mv.addObject("errMsg",errMsg);
+			mv.setViewName("redirect:ClassStuList.do?courseClassId="+courClassId);
+			return mv;
+		}
+		if(stu == null)
+		{
+			errMsg = "2"; //无此学生
+			mv.addObject("errMsg",errMsg);
+			mv.setViewName("redirect:ClassStuList.do?courseClassId="+courClassId);
+			return mv;
+		}
+		if(teacherService.addClassStu(stuId, courClassId))
+		{
+			errMsg = "0"; //添加成功
+		}
+		else
+		{
+			errMsg = "1"; //学生已存在
+		}
+		mv.addObject("errMsg",errMsg);
+		mv.setViewName("redirect:ClassStuList.do?courseClassId="+courClassId);
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherManage.do" }, method = RequestMethod.GET)
+	public ModelAndView manageTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员管理教师 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.setViewName("ManageTeacher");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherManage.do" }, method = RequestMethod.POST)
+	public ModelAndView searchTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员管理教师
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		List<Teacher> teachers;
+		String keyword;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		keyword = (String) request.getParameter("techIdOrName");
+		if(keyword != null)
+		{
+			teachers = teacherService.searchTeacher(keyword);
+			mv.addObject("teachers",teachers);
+		}
+		mv.setViewName("ManageTeacher");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherModify.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectModifyTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员修改教师资料 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		Teacher modifyUser;
+		String techId;
+		String techLastLoginTime;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		techId = request.getParameter("techId");
+		if(techId == null || techId.isEmpty())
+		{
+			mv.setViewName("redirect:TeacherManage.do");
+			return mv;
+		}
+		modifyUser = teacherService.findTeacher(techId);
+		if(modifyUser == null)
+		{
+			mv.setViewName("redirect:TeacherManage.do");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		if(modifyUser.getTechLastLoginTime() >0 )
+		{
+			techLastLoginTime = dateTimeConverter.dateTimeLongToStr(modifyUser.getTechLastLoginTime(), "yyyy-MM-dd HH:mm:ss");
+		}
+		else
+		{
+			techLastLoginTime = "";
+		}
+		mv.addObject("modifyUser",modifyUser);
+		mv.addObject("techLastLoginTime",techLastLoginTime);
+		mv.setViewName("TeacherModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherModify.do" }, method = RequestMethod.POST)
+	public ModelAndView modifyTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员修改教师资料 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		Teacher modifyUser;
+		String msg;
+		String techId = request.getParameter("techId");
+		String techPassword = request.getParameter("techPassword");
+		String techRole = request.getParameter("techRole");
+		String techRealName = request.getParameter("techRealName");
+		String techSex = request.getParameter("techSex");
+		String techPhoneNum = request.getParameter("techPhoneNum");
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404.do");
+			return mv;
+		}
+		if(techId == null || techId.isEmpty())
+		{
+			mv.setViewName("redirect:TeacherManage.do");
+			return mv;
+		}
+		modifyUser = teacherService.findTeacher(techId);
+		if(modifyUser == null)
+		{
+			mv.setViewName("redirect:TeacherManage.do");
+			return mv;
+		}
+		if(techPassword != null && !techPassword.isEmpty())
+		{
+			modifyUser.setTechPassword(techPassword);
+		}
+		if(techRole != null && (techRole.equals("0") || techRole.equals("1")))
+		{
+			modifyUser.setTechRole(Integer.valueOf(techRole));
+		}
+		if(techRealName != null)
+		{
+			modifyUser.setTechRealName(techRealName);
+		}
+		if(techSex != null && (techSex.equals("0")||techSex.equals("1")))
+		{
+			modifyUser.setTechSex(techSex);
+		}
+		if(techPhoneNum != null)
+		{
+			modifyUser.setTechPhoneNum(techPhoneNum);
+		}
+		if(teacherService.modifyInfo(modifyUser))
+		{
+			msg = "0";
+		}
+		else
+		{
+			msg = "1";
+		}
+		String techLastLoginTime;
+		if(modifyUser.getTechLastLoginTime() >0 )
+		{
+			techLastLoginTime = dateTimeConverter.dateTimeLongToStr(modifyUser.getTechLastLoginTime(), "yyyy-MM-dd HH:mm:ss");
+		}
+		else
+		{
+			techLastLoginTime = "";
+		}
+		mv.addObject("modifyUser",modifyUser);
+		mv.addObject("techLastLoginTime",techLastLoginTime);
+		mv.addObject("msg",msg);
+		mv.setViewName("TeacherModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherAdd.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectAddTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员添加教师 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404.do");
+			return mv;
+		}
+		mv.setViewName("TeacherAdd");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherAdd.do" }, method = RequestMethod.POST)
+	public ModelAndView addTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员添加教师
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		Teacher newUser;
+		String msg;
+		String techId = request.getParameter("techId");
+		String techPassword = request.getParameter("techPassword");
+		String techRole = request.getParameter("techRole");
+		String techRealName = request.getParameter("techRealName");
+		String techSex = request.getParameter("techSex");
+		String techPhoneNum = request.getParameter("techPhoneNum");
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		if(techId == null || techId.isEmpty())
+		{
+			msg = "1"; //ID不能为空
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+			return mv;
+		}
+		if(teacherService.findTeacher(techId) != null) //ID已存在
+		{
+			msg = "2"; //ID已存在
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+			return mv;
+		}
+		if(techPassword == null || techPassword.isEmpty())
+		{
+			msg = "3"; //资料不全，添加失败
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+			return mv;
+		}
+		if(techRole == null || !(techRole.equals("0") || techRole.equals("1")))
+		{
+			msg = "3"; //资料不全，添加失败
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+			return mv;
+		}
+		if(techSex == null || !(techSex.equals("0") || techSex.equals("1")))
+		{
+			msg = "3"; //资料不全，添加失败
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+			return mv;
+		}
+		newUser = new Teacher();
+		newUser.setTechId(techId);
+		newUser.setTechLastLoginTime(0);
+		newUser.setTechLastLoginIP("");
+		newUser.setTechPassword(techPassword);
+		newUser.setTechRole(Integer.valueOf(techRole));
+		newUser.setTechSex(techSex);
+		if(techRealName == null)
+		{
+			newUser.setTechRealName("");
+		}
+		else
+		{
+			newUser.setTechRealName(techRealName);
+		}
+		if(techPhoneNum == null)
+		{
+			newUser.setTechPhoneNum("");
+		}
+		else
+		{
+			newUser.setTechPhoneNum(techPhoneNum);
+		}
+		if(teacherService.addTeacher(newUser))
+		{
+			msg = "4"; //添加成功
+			mv.addObject("techId",newUser.getTechId());
+			mv.addObject("msg",msg);
+			mv.setViewName("redirect:TeacherModify.do");
+		}
+		else
+		{
+			msg = "3";
+			mv.addObject("newUser",newUser);
+			mv.addObject("msg",msg);
+			mv.setViewName("TeacherAdd");
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/TeacherDel.do" }, method = RequestMethod.GET)
+	public ModelAndView delTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员删除教师
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		Teacher delUser;
+		String techId;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		techId = request.getParameter("techId");
+		if(techId == null || techId.isEmpty() || teacherService.findTeacher(techId) == null)
+		{
+			msg = "1";
+			mv.addObject("msg");
+			mv.setViewName("redirect:TeacherManage.do");
+			return mv;
+		}
+		delUser = teacherService.findTeacher(techId);
+		if(user.getTechId().equals(delUser.getTechId())) //自己删除自己
+		{
+			if(teacherService.delTeacher(delUser.getTechId()))
+			{
+				mv.setViewName("redirect:Logout.do");
+			}
+			else
+			{
+				msg = "1";
+				mv.addObject("msg",msg);
+				mv.setViewName("redirect:TeacherManage.do");
+			}
+		}
+		else
+		{
+			if(teacherService.delTeacher(delUser.getTechId()))
+			{
+				msg = "0";
+			}
+			else
+			{
+				msg = "1";
+			}
+			mv.addObject("msg",msg);
+			mv.setViewName("redirect:TeacherManage.do");
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StuBatchAdd.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectAddBatchStu(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		request.setCharacterEncoding("UTF-8");
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("StuBatchAdd");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StuBatchAdd.do" }, method = RequestMethod.POST)
+	public ModelAndView addBatchStu(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		request.setCharacterEncoding("UTF-8");
+		String errMsg;
+		ModelAndView mv = new ModelAndView();
+		errMsg = "0";
+		mv.addObject("errMsg",errMsg);
+		mv.setViewName("StuBatchAdd");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentManage.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectStuManage(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员学生管理 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.setViewName("ManageStu");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentManage.do" }, method = RequestMethod.POST)
+	public ModelAndView stuManage(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员学生管理
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String idOrName;
+		List<Student> stus;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		idOrName = request.getParameter("idOrName");
+		if(idOrName == null)
+		{
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		stus = teacherService.searchStu(idOrName);
+		mv.addObject("stus",stus);
+		mv.setViewName("ManageStu");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentDel.do" }, method = RequestMethod.GET)
+	public ModelAndView delStudent(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String stuId;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		stuId = request.getParameter("stuId");
+		if(stuId == null || stuId.isEmpty())
+		{
+			msg = "1";
+		}
+		if(teacherService.delStudent(stuId))
+		{
+			msg = "0";
+		}
+		else
+		{
+			msg = "1";
+		}
+		mv.addObject("msg",msg);
+		mv.setViewName("redirect:StudentManage.do");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/RegInfoDeleteAdmin.do" }, method = RequestMethod.GET)
+	public ModelAndView delRegInfoAdmin(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //删除学生注册信息
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String stuId;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		stuId = request.getParameter("stuId");
+		if(stuId == null || stuId.isEmpty())
+		{
+			msg = "3"; //删除失败
+			mv.addObject("msg",msg);
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		if(teacherService.deleteStuRegInfo(stuId))
+		{
+			msg = "2"; //删除成功
+		}
+		else
+		{
+			msg = "1"; //删除失败
+		}
+		mv.addObject("msg",msg);
+		mv.setViewName("redirect:StudentManage.do");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentAdd.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectStuAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理 添加学生页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.setViewName("StudentAdd");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentAdd.do" }, method = RequestMethod.POST)
+	public ModelAndView studentAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理 添加学生
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String stuId;
+		String stuName;
+		String stuSex;
+		String stuClass;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		stuId = request.getParameter("stuId");
+		stuName = request.getParameter("stuName");
+		stuSex = request.getParameter("stuSex");
+		stuClass = request.getParameter("stuClass");
+		Student newStu = new Student();
+		if(stuId == null || stuId.isEmpty())
+		{
+			msg = "1"; //学号为空
+			mv.addObject("msg",msg);
+			mv.setViewName("StudentAdd");
+			return mv;
+		}
+		if(teacherService.getStuById(stuId) != null)
+		{
+			msg = "2"; //学号已存在
+			mv.addObject("msg",msg);
+			mv.setViewName("StudentAdd");
+			return mv;
+		}
+		if(stuName == null || stuName.isEmpty())
+		{
+			msg = "3";
+			mv.addObject("msg",msg);
+			mv.setViewName("StudentAdd");
+			return mv;
+		}
+		if(stuSex == null || stuSex.isEmpty() || !(stuSex.equals("0") || stuSex.equals("1")))
+		{
+			msg = "3";
+			mv.addObject("msg",msg);
+			mv.setViewName("StudentAdd");
+			return mv;
+		}
+		newStu.setStuId(stuId);
+		newStu.setStuName(stuName);
+		newStu.setStuSex(stuSex);
+		if(stuClass == null)
+		{
+			newStu.setStuClass("");
+		}
+		else
+		{
+			newStu.setStuClass(stuClass);
+		}
+		newStu.setStuWechatOpenId("");
+		if(teacherService.addStudent(newStu))
+		{
+			msg = "4";
+			mv.addObject("stuId",stuId);
+			mv.setViewName("redirect:StudentModify.do");
+		}
+		else
+		{
+			msg = "3";
+			mv.setViewName("StudentAdd");
+		}
+		mv.addObject("msg",msg);
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentModify.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectStuModify(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理 修改学生 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		String stuId;
+		String msg;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		stuId = request.getParameter("stuId");
+		if(stuId == null || stuId.isEmpty())
+		{
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		Student modifyStu = teacherService.getStuById(stuId);
+		if(modifyStu == null)
+		{
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.addObject("modifyStu",modifyStu);
+		mv.setViewName("StudentModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/StudentModify.do" }, method = RequestMethod.POST)
+	public ModelAndView studentModify(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理 修改学生
+	{
+		request.setCharacterEncoding("UTF-8");
+		String stuId;
+		String stuName;
+		String stuSex;
+		String stuClass;
+		String stuWechatOpenId;
+		String msg;
+		Student modifyStu;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		stuId = request.getParameter("stuId");
+		stuName = request.getParameter("stuName");
+		stuSex = request.getParameter("stuSex");
+		stuClass = request.getParameter("stuClass");
+		stuWechatOpenId = request.getParameter("stuWechatOpenId");
+		if(stuId == null || stuId.isEmpty())
+		{
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		modifyStu = teacherService.getStuById(stuId);
+		if(modifyStu == null)
+		{
+			mv.setViewName("redirect:StudentManage.do");
+			return mv;
+		}
+		if(stuName != null && !stuName.isEmpty())
+		{
+			modifyStu.setStuName(stuName);
+		}
+		if(stuSex != null && !stuSex.isEmpty() && (stuSex.equals("0")||stuSex.equals("1")))
+		{
+			modifyStu.setStuSex(stuSex);
+		}
+		if(stuClass != null)
+		{
+			modifyStu.setStuClass(stuClass);
+		}
+		if(stuWechatOpenId != null)
+		{
+			modifyStu.setStuWechatOpenId(stuWechatOpenId);
+		}
+		if(teacherService.modifyStu(modifyStu))
+		{
+			msg = "0";
+		}
+		else
+		{
+			msg = "1";
+		}
+		mv.addObject("msg",msg);
+		mv.addObject("modifyStu",modifyStu);
+		mv.setViewName("StudentModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassManageAdmin.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectClsManageAdm(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员管理教学班 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String msg;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.setViewName("ManageClassAdmin");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassManageAdmin.do" }, method = RequestMethod.POST)
+	public ModelAndView clsManageAdm(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员管理教学班
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		String clsId;
+		List<CourseClass> clses;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		clsId = request.getParameter("clsId");
+		if(clsId == null)
+		{
+			mv.setViewName("redirect:ClassManageAdmin.do");
+			return mv;
+		}
+		clses = teacherService.searchClass(clsId);
+		mv.addObject("clses",clses);
+		mv.setViewName("ManageClassAdmin");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassDel.do" }, method = RequestMethod.GET)
+	public ModelAndView delClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员删除教学班
+	{
+		request.setCharacterEncoding("UTF-8");
+		String clsId;
+		String msg;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		clsId = request.getParameter("clsId");
+		if(clsId == null || clsId.isEmpty())
+		{
+			mv.setViewName("redirect:ClassManageAdmin.do");
+			return mv;
+		}
+		CourseClass cls = teacherService.getCourseClassById(clsId);
+		if(cls == null)
+		{
+			msg = "1";
+			mv.addObject("msg",msg);
+			mv.setViewName("ClassManageAdmin.do");
+			return mv;
+		}
+		if(teacherService.delClass(clsId))
+		{
+			msg = "0";
+		}
+		else
+		{
+			msg = "1";
+		}
+		mv.addObject("msg",msg);
+		mv.setViewName("ClassManageAdmin.do");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassAdd.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectAddClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员添加教学班 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		mv.setViewName("ClassAdd");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassAdd.do" }, method = RequestMethod.POST)
+	public ModelAndView addClass(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员添加教学班
+	{
+		request.setCharacterEncoding("UTF-8");
+		String clsId;
+		String teacherId;
+		String courseName;
+		String msg;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		clsId = request.getParameter("clsId");
+		if(clsId == null || clsId.isEmpty())
+		{
+			msg = "1"; //添加失败
+			mv.addObject("msg",msg);
+			mv.setViewName("ClassAdd");
+			return mv;
+		}
+		if(teacherService.getCourseClassById(clsId) != null)
+		{
+			msg = "2"; //教学班ID已存在
+			mv.addObject("msg",msg);
+			mv.setViewName("ClassAdd");
+			return mv;
+		}
+		teacherId = request.getParameter("teacherId");
+		if(teacherId == null || teacherId.isEmpty() || teacherService.findTeacher(teacherId) == null)
+		{
+			msg = "3"; //教师不存在
+			mv.addObject("msg",msg);
+			mv.setViewName("ClassAdd");
+			return mv;
+		}
+		courseName = request.getParameter("courseName");
+		if(courseName == null)
+		{
+			courseName = "";
+		}
+		Course newCourse = new Course();
+		newCourse.setCourseId(String.valueOf(System.currentTimeMillis()));
+		newCourse.setCourseName(courseName);
+		if(!teacherService.addCourse(newCourse))
+		{
+			msg = "1";
+			mv.addObject("msg",msg);
+			mv.setViewName("ClassAdd");
+			return mv;
+		}
+		CourseClass newCls = new CourseClass();
+		newCls.setCourseClassId(clsId);
+		newCls.setCourse(newCourse);
+		newCls.setTeacher(teacherService.findTeacher(teacherId));
+		if(teacherService.addCourseClass(newCls))
+		{
+			msg = "4"; //添加成功 转向修改页面
+			mv.addObject("clsId",newCls.getCourseClassId());
+			mv.setViewName("redirect:ClassModify.do");
+		}
+		else
+		{
+			msg = "1";
+			mv.setViewName("ClassAdd");
+		}
+		mv.addObject("msg",msg);
+		return mv;	
+	}
+	
+	@RequestMapping(value = { "/ClassModify.do" }, method = RequestMethod.GET)
+	public ModelAndView redirectClsModify(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员修改教学班 页面
+	{
+		request.setCharacterEncoding("UTF-8");
+		String clsId;
+		String msg;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		clsId = request.getParameter("clsId");
+		if(clsId == null || clsId.isEmpty())
+		{
+			mv.setViewName("redirect:ClassManageAdmin.do");
+			return mv;
+		}
+		CourseClass modifyCls = teacherService.getCourseClassById(clsId);
+		if(modifyCls == null)
+		{
+			mv.setViewName("redirect:ClassManageAdmin.do");
+			return mv;
+		}
+		msg = request.getParameter("msg");
+		if(msg != null && !msg.isEmpty())
+		{
+			mv.addObject("msg",msg);
+		}
+		mv.addObject("modifyCls",modifyCls);
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/ClassModify.do" }, method = RequestMethod.POST)
+	public ModelAndView clsModify(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员修改教学班
+	{
+		request.setCharacterEncoding("UTF-8");
+		String clsId;
+		String courseName;
+		String teacherId;
+		String msg;
+		Teacher user;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		clsId = request.getParameter("clsId");
+		if(clsId == null || clsId.isEmpty())
+		{
+			mv.setViewName("recirect:ClassManageAdmin.do");
+			return mv;
+		}
+		CourseClass modifyCls = teacherService.getCourseClassById(clsId);
+		if(modifyCls == null)
+		{
+			mv.setViewName("redirecr:ClassManage.do");
+			return mv;
+		}
+		courseName = request.getParameter("courseName");
+		teacherId = request.getParameter("teacherId");
+		if(teacherId != null && !teacherId.isEmpty())
+		{
+			Teacher newTeacher = teacherService.findTeacher(teacherId);
+			if(newTeacher == null)
+			{
+				msg = "2"; //无此教师
+				mv.addObject("modifyCls",modifyCls);
+				mv.addObject("msg",msg);
+				mv.setViewName("ClassModify");
+				return mv;
+			}
+			else
+			{
+				modifyCls.setTeacher(newTeacher);
+			}
+		}
+		Course oldCour = null;
+		if(courseName != null && !courseName.isEmpty())
+		{
+			if(!modifyCls.getCourse().getCourseName().equals(courseName))
+			{//修改课程名称
+				oldCour = modifyCls.getCourse();
+				Course newCour = new Course();
+				newCour.setCourseId(String.valueOf(System.currentTimeMillis()));
+				newCour.setCourseName(courseName);
+				if(teacherService.addCourse(newCour))
+				{
+					modifyCls.setCourse(newCour);
+				}
+			}
+		}
+		if(teacherService.modifyCourseClass(modifyCls))
+		{
+			msg = "0";
+			if(oldCour != null)
+			{
+				teacherService.delCourse(oldCour.getCourseId());
+			}
+		}
+		else
+		{
+			msg = "1";
+		}
+		mv.addObject("msg",msg);
+		mv.addObject("modifyCls",modifyCls);
+		mv.setViewName("ClassModify");
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/SessionManageAdmin.do" }, method = RequestMethod.GET)
+	public ModelAndView listClassAdmin(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员管理会话
+	{
+		request.setCharacterEncoding("UTF-8");
+		Teacher user;
+		List<CourseClass> courseClasses;
+		ModelAndView mv = new ModelAndView();
+		if(!loginCheck(session))
+		{
+			mv.setViewName("redirect:index.jsp");
+			return mv;
+		}
+		user = (Teacher)session.getAttribute("user");
+		if(user.getTechRole() == 1) //非管理员权限
+		{
+			mv.setViewName("redirect:404");
+			return mv;
+		}
+		courseClasses = teacherService.searchClass("");
+		mv.addObject("courseClasses", courseClasses);
+		mv.setViewName("ManageSessionSelect");
 		return mv;
 	}
 }

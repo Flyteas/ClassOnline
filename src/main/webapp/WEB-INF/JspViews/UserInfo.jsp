@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -69,53 +69,44 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.techRealName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							当前角色
-						</td>
-						<td>
-						<c:if test="${user.techRole == '0'}" >
-							管理员
-						</c:if>
-						<c:if test="${user.techRole == '1'}" >
-							教师
-						</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.techLastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="UserInfo.do" method="post">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="displayTechId">教师ID</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="techId" type="text" value="${user.techId}" disabled />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="displayRealName">真实姓名</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="techRealName" type="text" value="${user.techRealName}" disabled />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputPhone">联系电话</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="techPhoneNum" name="techPhoneNum" value="${user.techPhoneNum}" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">修改信息</button>
+					</div>
+				</div>
+			</form>
+    		<c:if test="${msg == '0'}">
+			<div class="alert alert-success" role="alert" id="modifyResultAlert">
+        		<strong>修改成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>无此教师，修改失败</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>
+
 </body>
 </html>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -100,8 +101,15 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 			return false;
 		}
 		List<StuSignIn> stuSignIns = stuSignInDao.findStuSignInBySession(delSession);
-		ht.deleteAll(stuSignIns);
-		ht.delete(delSession);
+		try
+		{
+			ht.deleteAll(stuSignIns);
+			ht.delete(delSession);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -148,7 +156,14 @@ public class LessonSessionDaoImpl implements LessonSessionDao
 	@Override
 	public boolean addSession(LessonSession lessonSession) //添加会话
 	{
-		ht.save(lessonSession);
+		try
+		{
+			ht.save(lessonSession);
+		}
+		catch(HibernateException e)
+		{
+			return false;
+		}
 		return true;
 	}
 

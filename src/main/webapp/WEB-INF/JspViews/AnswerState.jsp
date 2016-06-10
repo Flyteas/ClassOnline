@@ -20,28 +20,38 @@
 				
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li>
+						<c:if test="${user.techRole == '1'}" >
+						<li class="active">
 							 <a href="SessionManage.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">学生管理</a>
+							 <a href="ClassManage.do">班级管理</a>
+						</li>
+						</c:if>
+						<c:if test="${user.techRole == '0'}" >
+						<li class="active">
+							 <a href="SessionManageAdmin.do">会话管理</a>
 						</li>
 						<li>
-							 <a href="#">班级管理</a>
+							 <a href="ClassManageAdmin.do">班级管理</a>
 						</li>
 						<li>
-							 <a href="#">教师管理</a>
+							 <a href="StudentManage.do">学生管理</a>
 						</li>
+						<li>
+							 <a href="TeacherManage.do">教师管理</a>
+						</li>
+						</c:if>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							 <a class="dropdown-toggle" href="#" data-toggle="dropdown">${user.techRealName}<strong class="caret"></strong></a>
 							<ul class="dropdown-menu">
 								<li>
-									 <a href="#">个人资料</a>
+									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="#">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>
@@ -215,7 +225,7 @@
 				</tbody>
 			</table>
 			<br><br><br>
-			<label for="TableName">答题详情&nbsp;&nbsp;&nbsp;答题率: ${involveRates}%&nbsp;&nbsp;&nbsp;正确率: ${correctRates}%</label><br>
+			<label for="TableName">答题详情&nbsp;&nbsp;&nbsp;答题率: ${involveRates}%<c:if test="${lessonSession.question.questionType == '0' || lessonSession.question.questionType == '1'}">&nbsp;&nbsp;&nbsp;正确率: ${correctRates}%</c:if></label><br>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -252,7 +262,8 @@
 							<c:out value="${stuAnswer.answer}"/>
 						</td>
 						<td>
-							<c:if test="${stuAnswer.answerCorrect}">正确</c:if>
+							<c:if test="${lessonSession.question.questionType != '2' && stuAnswer.answerCorrect}">正确</c:if>
+							<c:if test="${lessonSession.question.questionType != '2' && !stuAnswer.answerCorrect}">错误</c:if>
 						</td>
 						<td>
 							<c:out value="${stuAnswer.answerOrder}"/>
@@ -264,6 +275,36 @@
 					</c:forEach>	
 				</tbody>
 			</table>
+			<br><br><br>
+			<c:if test="${lessonSession.question.questionType == '0'}">
+			<label for="TableName">回答统计</label><br>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							选项
+						</th>
+						<c:forEach var="ansCount" items="${ansCountMap}">
+						<th>
+							<c:out value="${ansCount.key}"/>
+						</th>
+						</c:forEach>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="success">
+						<td>
+							人数
+						</td>
+						<c:forEach var="ansCount" items="${ansCountMap}">
+						<td>
+							<c:out value="${ansCount.value}"/>
+						</td>
+						</c:forEach>
+					</tr>	
+				</tbody>
+			</table>
+			</c:if>
 			<br><br><br>
 			<label for="TableName">未答题学生</label><br>
 			<table class="table table-bordered">
@@ -293,13 +334,14 @@
 							<c:out value="${noAnsStu.stuName}"/>
 						</td>
 						<td>
-							<c:out value="${noAnsStu.stuSex}"/>
+							<c:if test="${noAnsStu.stuSex == 0}">男</c:if>
+							<c:if test="${noAnsStu.stuSex == 1}">女</c:if>
 						</td>
 						<td>
 							<c:out value="${noAnsStu.stuClass}"/>
 						</td>
 					</tr>
-					</c:forEach>	
+				</c:forEach>	
 				</tbody>
 			</table>
 		</div>

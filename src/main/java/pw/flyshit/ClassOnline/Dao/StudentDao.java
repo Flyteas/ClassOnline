@@ -13,4 +13,6 @@ public interface StudentDao
 	public boolean addStudent(Student newStudent); //添加学生
 	public List<Student> getAllRegStu(); //获取所有已注册学生
 	public List<Student> getAllUnregStu(); //获取所有未注册学生
+	public List<Student> searchStu(String keyword); //学号或姓名搜索
+	public boolean modifyStu(Student stu); //修改学生信息
 }
